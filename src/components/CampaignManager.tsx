@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
-import { Play, Pause, CheckCircle, AlertCircle, Trash2 } from 'lucide-react';
+import { Play, Pause, CheckCircle, AlertCircle, Trash2, Info } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { sendEmail } from '../utils/emailService';
+import { ErrorDetails } from './ErrorDetails';
+import { Campaign } from '../types';
 
 export const CampaignManager: React.FC = () => {
-  const { templates, contactLists, campaigns, createCampaign, updateCampaign, deleteCampaign, smtpConfig } = useStore();
+  const { 
+    templates, 
+    contactLists, 
+    campaigns, 
+    smtpConfig,
+    createCampaign, 
+    updateCampaign, 
+    deleteCampaign 
+  } = useStore();
+
   const [newCampaignName, setNewCampaignName] = useState('');
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [selectedContactListId, setSelectedContactListId] = useState('');
   const [subject, setSubject] = useState('');
+  const [showErrors, setShowErrors] = useState<string | null>(null);
 
   const handleCreateCampaign = () => {
     if (!newCampaignName || !selectedTemplateId || !selectedContactListId || !subject) {
@@ -25,7 +37,7 @@ export const CampaignManager: React.FC = () => {
       return;
     }
 
-    const campaign = {
+    const campaign: Campaign = {
       id: Date.now().toString(),
       name: newCampaignName,
       subject,
@@ -33,7 +45,7 @@ export const CampaignManager: React.FC = () => {
       templateName: selectedTemplate.name,
       contactListId: selectedContactListId,
       contactListName: selectedContactList.name,
-      status: 'draft' as const,
+      status: 'draft',
       sentCount: 0,
       totalCount: selectedContactList.contacts.length,
     };
@@ -69,39 +81,46 @@ export const CampaignManager: React.FC = () => {
     updateCampaign(campaignId, { status: 'sending', sentCount: 0 });
 
     let successCount = 0;
-    let hasError = false;
+    const errors: Array<{ email: string; error: string }> = [];
 
     for (const contact of contactList.contacts) {
-      const personalizedContent = template.content.replace(/\{\{name\}\}/g, contact.name);
-      
-      const result = await sendEmail(
-        contact,
-        campaign.subject,
-        personalizedContent,
-        smtpConfig
-      );
+      try {
+        const personalizedContent = template.content.replace(/\{\{name\}\}/g, contact.name);
+        
+        const result = await sendEmail(
+          contact,
+          campaign.subject,
+          personalizedContent,
+          smtpConfig
+        );
 
-      if (result.success) {
-        successCount++;
+        if (result.success) {
+          successCount++;
+        } else {
+          errors.push({ email: contact.email, error: result.error || 'Unknown error' });
+        }
+        
         updateCampaign(campaignId, {
           sentCount: successCount,
         });
-      } else {
-        hasError = true;
-        updateCampaign(campaignId, {
-          status: 'failed',
-          error: result.error
+      } catch (error: any) {
+        errors.push({ 
+          email: contact.email, 
+          error: error.message || 'Unknown error' 
         });
-        toast.error(`Failed to send to ${contact.email}: ${result.error}`);
-        break;
       }
     }
 
-    if (!hasError) {
-      updateCampaign(campaignId, {
-        status: 'completed',
-        sentCount: successCount
-      });
+    const status = errors.length > 0 ? 'completed with errors' : 'completed';
+    updateCampaign(campaignId, {
+      status,
+      sentCount: successCount,
+      error: errors.length > 0 ? JSON.stringify(errors) : undefined
+    });
+
+    if (errors.length > 0) {
+      toast.error(`Campaign completed with ${errors.length} errors. ${successCount} emails sent successfully.`);
+    } else {
       toast.success(`Campaign completed: ${successCount} emails sent successfully`);
     }
   };
@@ -227,6 +246,8 @@ export const CampaignManager: React.FC = () => {
                         ? 'bg-green-100 text-green-800'
                         : campaign.status === 'sending'
                         ? 'bg-yellow-100 text-yellow-800'
+                        : campaign.status === 'completed with errors'
+                        ? 'bg-orange-100 text-orange-800'
                         : campaign.status === 'failed'
                         ? 'bg-red-100 text-red-800'
                         : 'bg-gray-100 text-gray-800'
@@ -235,7 +256,13 @@ export const CampaignManager: React.FC = () => {
                     {campaign.status}
                   </span>
                   {campaign.error && (
-                    <div className="text-xs text-red-600 mt-1">{campaign.error}</div>
+                    <button
+                      onClick={() => setShowErrors(campaign.id)}
+                      className="ml-2 text-gray-500 hover:text-gray-700"
+                      title="View Errors"
+                    >
+                      <Info className="w-4 h-4" />
+                    </button>
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -281,6 +308,13 @@ export const CampaignManager: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      {showErrors && (
+        <ErrorDetails
+          errors={JSON.parse(campaigns.find(c => c.id === showErrors)?.error || '[]')}
+          onClose={() => setShowErrors(null)}
+        />
+      )}
     </div>
   );
 };
