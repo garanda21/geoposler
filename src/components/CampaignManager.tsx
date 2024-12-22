@@ -220,7 +220,7 @@ export const CampaignManager: React.FC = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {campaign.contactListName}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-wrap">
                   <span
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       campaign.status === 'completed'
