@@ -1,6 +1,7 @@
 import React from 'react';
 import { useStore } from '../../store/useStore';
 import { Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface Props {
   selectedId: string | null;
@@ -9,6 +10,14 @@ interface Props {
 
 export const TemplateList: React.FC<Props> = ({ selectedId, onSelect }) => {
   const { templates, deleteTemplate } = useStore();
+
+  const handleDelete = (id: string) => {
+    deleteTemplate(id);
+    if (selectedId === id) {
+      onSelect(templates[0]?.id || '');
+    }
+    toast.success('Template deleted successfully');
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -25,7 +34,7 @@ export const TemplateList: React.FC<Props> = ({ selectedId, onSelect }) => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                deleteTemplate(template.id);
+                handleDelete(template.id);
               }}
               className="text-gray-400 hover:text-red-500"
             >

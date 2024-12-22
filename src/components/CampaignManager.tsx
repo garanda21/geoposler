@@ -5,20 +5,23 @@ import toast from 'react-hot-toast';
 import { sendEmail } from '../utils/emailService';
 
 export const CampaignManager: React.FC = () => {
-  const { templates, contacts, campaigns, createCampaign, updateCampaign, deleteCampaign, smtpConfig } = useStore();
+  const { templates, contactLists, campaigns, createCampaign, updateCampaign, deleteCampaign, smtpConfig } = useStore();
   const [newCampaignName, setNewCampaignName] = useState('');
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
+  const [selectedContactListId, setSelectedContactListId] = useState('');
   const [subject, setSubject] = useState('');
 
   const handleCreateCampaign = () => {
-    if (!newCampaignName || !selectedTemplateId || !subject) {
+    if (!newCampaignName || !selectedTemplateId || !selectedContactListId || !subject) {
       toast.error('Please fill in all fields');
       return;
     }
 
     const selectedTemplate = templates.find(t => t.id === selectedTemplateId);
-    if (!selectedTemplate) {
-      toast.error('Selected template not found');
+    const selectedContactList = contactLists.find(cl => cl.id === selectedContactListId);
+    
+    if (!selectedTemplate || !selectedContactList) {
+      toast.error('Selected template or contact list not found');
       return;
     }
 
@@ -28,14 +31,17 @@ export const CampaignManager: React.FC = () => {
       subject,
       templateId: selectedTemplateId,
       templateName: selectedTemplate.name,
+      contactListId: selectedContactListId,
+      contactListName: selectedContactList.name,
       status: 'draft' as const,
       sentCount: 0,
-      totalCount: contacts.length,
+      totalCount: selectedContactList.contacts.length,
     };
 
     createCampaign(campaign);
     setNewCampaignName('');
     setSelectedTemplateId('');
+    setSelectedContactListId('');
     setSubject('');
     toast.success('Campaign created successfully');
   };
@@ -43,13 +49,19 @@ export const CampaignManager: React.FC = () => {
   const handleStartCampaign = async (campaignId: string) => {
     const campaign = campaigns.find(c => c.id === campaignId);
     const template = templates.find(t => t.id === campaign?.templateId);
+    const contactList = contactLists.find(cl => cl.id === campaign?.contactListId);
     
-    if (!campaign || !template) {
-      toast.error('Campaign or template not found');
+    if (!campaign || !template || !contactList) {
+      toast.error('Campaign, template, or contact list not found');
       return;
     }
 
-    if (!contacts.length) {
+    if (!smtpConfig.host || !smtpConfig.username || !smtpConfig.password) {
+      toast.error('Please configure SMTP settings first');
+      return;
+    }
+
+    if (!contactList.contacts.length) {
       toast.error('No contacts available to send to');
       return;
     }
@@ -59,7 +71,7 @@ export const CampaignManager: React.FC = () => {
     let successCount = 0;
     let hasError = false;
 
-    for (const contact of contacts) {
+    for (const contact of contactList.contacts) {
       const personalizedContent = template.content.replace(/\{\{name\}\}/g, contact.name);
       
       const result = await sendEmail(
@@ -147,6 +159,21 @@ export const CampaignManager: React.FC = () => {
               ))}
             </select>
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Contact List</label>
+            <select
+              value={selectedContactListId}
+              onChange={(e) => setSelectedContactListId(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            >
+              <option value="">Select a contact list</option>
+              {contactLists.map((list) => (
+                <option key={list.id} value={list.id}>
+                  {list.name} ({list.contacts.length} contacts)
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             onClick={handleCreateCampaign}
             className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
@@ -165,6 +192,9 @@ export const CampaignManager: React.FC = () => {
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Template
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Contact List
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
@@ -186,6 +216,9 @@ export const CampaignManager: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {campaign.templateName}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {campaign.contactListName}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span

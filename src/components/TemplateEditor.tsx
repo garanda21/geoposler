@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { useStore } from '../store/useStore';
 import { RichTextEditor } from './editor/RichTextEditor';
@@ -11,10 +11,28 @@ interface Props {
 export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
   const { templates, updateTemplate } = useStore();
   const template = templates.find((t) => t.id === templateId);
-  const [mode, setMode] = useState<'visual' | 'code'>('visual');
-  const [name, setName] = useState(template?.name || '');
+  const [mode, setMode] = useState<'visual' | 'code'>('code');
+  const [name, setName] = useState('');
+  const [content, setContent] = useState('');
+
+  useEffect(() => {
+    if (template) {
+      setName(template.name);
+      setContent(template.content);
+    }
+  }, [template]);
 
   if (!template) return null;
+
+  const handleNameChange = (newName: string) => {
+    setName(newName);
+    updateTemplate(templateId, { name: newName });
+  };
+
+  const handleContentChange = (newContent: string) => {
+    setContent(newContent);
+    updateTemplate(templateId, { content: newContent });
+  };
 
   return (
     <div className="space-y-4">
@@ -22,10 +40,7 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
         <input
           type="text"
           value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            updateTemplate(templateId, { name: e.target.value });
-          }}
+          onChange={(e) => handleNameChange(e.target.value)}
           className="flex-1 px-4 py-2 border rounded-md"
           placeholder="Template Name"
         />
@@ -51,15 +66,15 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
 
       {mode === 'visual' ? (
         <RichTextEditor
-          content={template.content}
-          onChange={(content) => updateTemplate(templateId, { content })}
+          content={content}
+          onChange={handleContentChange}
         />
       ) : (
         <Editor
           height="600px"
           defaultLanguage="html"
-          value={template.content}
-          onChange={(value) => updateTemplate(templateId, { content: value || '' })}
+          value={content}
+          onChange={(value) => handleContentChange(value || '')}
           theme="vs-light"
           options={{
             minimap: { enabled: false },
@@ -73,7 +88,7 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
         <h3 className="text-sm font-medium text-gray-700 mb-2">Preview</h3>
         <div
           className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: template.content }}
+          dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
     </div>

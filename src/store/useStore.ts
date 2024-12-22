@@ -1,18 +1,18 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Template, EmailContact, Campaign, SmtpConfig } from '../types';
+import { Template, Campaign, ContactList, SmtpConfig } from '../types';
 
 interface Store {
   templates: Template[];
-  contacts: EmailContact[];
+  contactLists: ContactList[];
   campaigns: Campaign[];
   smtpConfig: SmtpConfig;
   addTemplate: (template: Template) => void;
   updateTemplate: (id: string, template: Partial<Template>) => void;
   deleteTemplate: (id: string) => void;
-  importContacts: (contacts: EmailContact[]) => void;
-  updateContact: (contact: EmailContact) => void;
-  deleteContact: (id: string) => void;
+  addContactList: (contactList: ContactList) => void;
+  updateContactList: (id: string, contactList: Partial<ContactList>) => void;
+  deleteContactList: (id: string) => void;
   createCampaign: (campaign: Campaign) => void;
   updateCampaign: (id: string, campaign: Partial<Campaign>) => void;
   deleteCampaign: (id: string) => void;
@@ -23,7 +23,7 @@ export const useStore = create<Store>()(
   persist(
     (set) => ({
       templates: [],
-      contacts: [],
+      contactLists: [],
       campaigns: [],
       smtpConfig: {
         host: '',
@@ -45,16 +45,17 @@ export const useStore = create<Store>()(
         set((state) => ({
           templates: state.templates.filter((t) => t.id !== id),
         })),
-      importContacts: (contacts) => set({ contacts }),
-      updateContact: (contact) =>
+      addContactList: (contactList) =>
+        set((state) => ({ contactLists: [...state.contactLists, contactList] })),
+      updateContactList: (id, contactList) =>
         set((state) => ({
-          contacts: state.contacts.map((c) =>
-            c.id === contact.id ? contact : c
+          contactLists: state.contactLists.map((cl) =>
+            cl.id === id ? { ...cl, ...contactList } : cl
           ),
         })),
-      deleteContact: (id) =>
+      deleteContactList: (id) =>
         set((state) => ({
-          contacts: state.contacts.filter((c) => c.id !== id),
+          contactLists: state.contactLists.filter((cl) => cl.id !== id),
         })),
       createCampaign: (campaign) =>
         set((state) => ({ campaigns: [...state.campaigns, campaign] })),
@@ -72,7 +73,7 @@ export const useStore = create<Store>()(
         set((state) => ({ smtpConfig: { ...state.smtpConfig, ...config } })),
     }),
     {
-      name: 'email-campaign-storage',
+      name: 'email-campaign-storage'      
     }
   )
 );

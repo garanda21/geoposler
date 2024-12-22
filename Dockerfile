@@ -1,36 +1,47 @@
-# Stage 1: Build Node.js environment
-FROM node:18.20.3 AS builder
+# Build stage
+FROM node:18-alpine as builder
 
-# Set working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies (including Nodemailer)
-RUN npm install express cors nodemailer @types/express @types/cors
+# Install dependencies
+RUN npm install
 
-# Copy application files
+# Copy source code
 COPY . .
 
-# Build the application (if applicable)
+# Build the frontend application
 RUN npm run build
 
-# Stage 2: Production environment with Node.js and Nginx
-FROM nginx:alpine AS production
+# Production stage
+FROM node:18-alpine
 
-# Copy built files to Nginx volume (if applicable)
-COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
+WORKDIR /app
 
-# Install Node.js runtime (optional, depending on Nginx configuration)
-# Consider removing this line if Nginx serves static files only
-RUN apk add --no-cache nodejs
+# Instalar Nginx
+RUN apk add --no-cache nginx
 
-# Copy Nodemailer server code
-#COPY --from=builder server/index.js /usr/share/nginx/html/server/index.js
+# Copy package files and install production dependencies
+COPY package*.json ./
+RUN npm install --production
 
-# Expose port 80
+# Copy built frontend assets
+COPY --from=builder /app/dist ./dist
+
+# Copy server files
+COPY server ./server
+
+# Copy nginx configuration
+COPY nginx.conf ./nginx.conf
+
+# Expose ports for both frontend and backend
 EXPOSE 80 3000
 
-# Command to start Nginx and Node.js server
-CMD ["nginx", "-g", "daemon off;"] & node /usr/share/nginx/html/server/index.js
+# Create start script
+RUN echo -e '#!/bin/sh\nnginx -c /app/nginx.conf -g "daemon off;" & node server/index.js' > start.sh  && \
+chmod +x start.sh
+
+# Start both nginx and node server
+CMD ["./start.sh"]

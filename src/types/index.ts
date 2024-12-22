@@ -10,12 +10,20 @@ export interface EmailContact {
   email: string;
 }
 
+export interface ContactList {
+  id: string;
+  name: string;
+  contacts: EmailContact[];
+}
+
 export interface Campaign {
   id: string;
   name: string;
   subject: string;
   templateId: string;
   templateName: string;
+  contactListId: string;
+  contactListName: string;
   status: 'draft' | 'sending' | 'completed' | 'failed';
   sentCount: number;
   totalCount: number;
@@ -27,13 +35,8 @@ export interface SmtpConfig {
   port: number;
   username: string;
   password: string;
-  fromEmail: string;
   fromName: string;
-}
-
-export interface EmailError {
-  email: string;
-  error: string;
+  fromEmail: string;
 }
 
 export interface SendEmailResponse {
