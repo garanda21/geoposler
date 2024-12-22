@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Navigation } from './components/Navigation';
 import { TemplatesTab } from './components/tabs/TemplatesTab';
@@ -6,9 +6,12 @@ import { ContactsTab } from './components/tabs/ContactsTab';
 import { SettingsTab } from './components/tabs/SettingsTab';
 import { CampaignTab } from './components/tabs/CampaignTab';
 import { Toaster } from 'react-hot-toast';
+import { useStore } from './store/useStore';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'templates' | 'contacts' | 'campaigns' | 'settings'>('templates');
+
+  const fetchSettings = useStore(state => state.fetchSettings);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -24,6 +27,12 @@ function App() {
         return null;
     }
   };
+
+  // Fetch settings when the app initializes
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
+
 
   return (
     <div className="min-h-screen bg-gray-50">

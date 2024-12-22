@@ -1,13 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import toast from 'react-hot-toast';
+import { SmtpConfig } from '../../types';
+import { Loader2 } from 'lucide-react'; // Import from lucide-react for the spinner
+
 
 export const SettingsTab: React.FC = () => {
-  const { smtpConfig, updateSmtpConfig } = useStore();
+  const { smtpConfig, updateSmtpConfig, saveSettings,  isLoading, error } = useStore();
+  const [formData, setFormData] = useState<SmtpConfig>(smtpConfig);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'port' ? parseInt(value) : value
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await updateSmtpConfig(formData);
+      await saveSettings();
+      toast.success('Settings saved successfully!');
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      toast.error('Failed to save settings');
+    }
+  };
 
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">SMTP Settings</h2>
+      {error && (
+        <div className="bg-red-50 text-red-600 p-4 rounded-md">
+          {error}
+        </div>
+      )}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -16,8 +46,9 @@ export const SettingsTab: React.FC = () => {
             </label>
             <input
               type="text"
-              value={smtpConfig.host}
-              onChange={(e) => updateSmtpConfig({ host: e.target.value })}
+              name="host"
+              value={formData.host}
+              onChange={handleInputChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
@@ -27,8 +58,9 @@ export const SettingsTab: React.FC = () => {
             </label>
             <input
               type="number"
-              value={smtpConfig.port}
-              onChange={(e) => updateSmtpConfig({ port: parseInt(e.target.value) })}
+              name="port"
+              value={formData.port}
+              onChange={handleInputChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
@@ -38,8 +70,9 @@ export const SettingsTab: React.FC = () => {
             </label>
             <input
               type="text"
-              value={smtpConfig.username}
-              onChange={(e) => updateSmtpConfig({ username: e.target.value })}
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
@@ -49,8 +82,9 @@ export const SettingsTab: React.FC = () => {
             </label>
             <input
               type="password"
-              value={smtpConfig.password}
-              onChange={(e) => updateSmtpConfig({ password: e.target.value })}
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
@@ -60,8 +94,9 @@ export const SettingsTab: React.FC = () => {
             </label>
             <input
               type="email"
-              value={smtpConfig.fromEmail}
-              onChange={(e) => updateSmtpConfig({ fromEmail: e.target.value })}
+              name="fromEmail"
+              value={formData.fromEmail}
+              onChange={handleInputChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
@@ -71,18 +106,25 @@ export const SettingsTab: React.FC = () => {
             </label>
             <input
               type="text"
-              value={smtpConfig.fromName}
-              onChange={(e) => updateSmtpConfig({ fromName: e.target.value })}
+              name="fromName"
+              value={formData.fromName}
+              onChange={handleInputChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
         </div>
         <div className="mt-4">
           <button
-            onClick={() => toast.success('Settings saved!')}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className={`px-4 py-2 bg-indigo-600 text-white rounded-md
+              ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-indigo-700'}
+              inline-flex items-center`}
           >
-            Save Settings
+            {isLoading && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {isLoading ? 'Saving...' : 'Save Settings'}
           </button>
         </div>
       </div>

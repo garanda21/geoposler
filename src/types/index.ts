@@ -24,7 +24,7 @@ export interface Campaign {
   templateName: string;
   contactListId: string;
   contactListName: string;
-  status: 'draft' | 'sending' | 'completed' | 'failed';
+  status: 'draft' | 'sending' | 'completed' | 'failed' | 'completed with errors';
   sentCount: number;
   totalCount: number;
   error?: string;
