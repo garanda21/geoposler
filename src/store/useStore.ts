@@ -3,7 +3,23 @@ import { persist } from 'zustand/middleware';
 import { Template, Campaign, ContactList, SmtpConfig } from '../types';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://10.70.29.123:3000';
+
+type ActionType = 
+    | 'ADD_TEMPLATE' 
+    | 'UPDATE_TEMPLATE' 
+    | 'DELETE_TEMPLATE'
+    | 'ADD_CONTACT_LIST'
+    | 'UPDATE_CONTACT_LIST'
+    | 'DELETE_CONTACT_LIST'
+    | 'ADD_CAMPAIGN'
+    | 'UPDATE_CAMPAIGN'
+    | 'DELETE_CAMPAIGN';
+
+  interface SaveSettingsAction {
+    type: ActionType;
+    data: any;  // This could be Template, ContactList, Campaign, etc.
+  }
 
 interface Store {
   isLoading: boolean;
@@ -12,6 +28,9 @@ interface Store {
   contactLists: ContactList[];
   campaigns: Campaign[];
   smtpConfig: SmtpConfig;
+  // Action types for saveSettings
+  
+  
   addTemplate: (template: Template) => Promise<void>;
   updateTemplate: (id: string, template: Partial<Template>) => Promise<void>;
   deleteTemplate: (id: string) => Promise<void>;
@@ -23,7 +42,7 @@ interface Store {
   deleteCampaign: (id: string) => Promise<void>;
   updateSmtpConfig: (config: SmtpConfig) => Promise<void>;
   fetchSettings: () => Promise<void>;
-  saveSettings: () => Promise<void>;
+  saveSettings: (action?: SaveSettingsAction) => Promise<void>;
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
 }
@@ -44,7 +63,10 @@ export const useStore = create<Store>()(
       },
       addTemplate: async (template) => {
         set((state) => ({ templates: [...state.templates, template] }));
-      await get().saveSettings();
+        await get().saveSettings({
+          type: 'ADD_TEMPLATE',
+          data: template
+        });
     },
       updateTemplate: async (id, template) => {
         set((state) => ({
@@ -52,17 +74,26 @@ export const useStore = create<Store>()(
             t.id === id ? { ...t, ...template } : t
           ),
         }));
-        await get().saveSettings();
+        await get().saveSettings({
+          type: 'UPDATE_TEMPLATE',
+          data: { id, ...template }
+        });
       },
       deleteTemplate: async (id) => {
         set((state) => ({
           templates: state.templates.filter((t) => t.id !== id),
         }));
-        await get().saveSettings();
+        await get().saveSettings({
+          type: 'DELETE_TEMPLATE',
+          data: { id }
+        });
       },
       addContactList: async (contactList) => {
         set((state) => ({ contactLists: [...state.contactLists, contactList] }));
-      await get().saveSettings();
+        await get().saveSettings({
+          type: 'ADD_CONTACT_LIST',
+          data: contactList
+        });
     },
       updateContactList: async (id, contactList) => {
         set((state) => ({
@@ -70,17 +101,26 @@ export const useStore = create<Store>()(
             cl.id === id ? { ...cl, ...contactList } : cl
           ),
         }));
-        await get().saveSettings();
+        await get().saveSettings({
+          type: 'UPDATE_CONTACT_LIST',
+          data: { id, ...contactList }
+        });
       },
       deleteContactList: async (id) => {
         set((state) => ({
           contactLists: state.contactLists.filter((cl) => cl.id !== id),
         }));
-        await get().saveSettings();
+        await get().saveSettings({
+          type: 'DELETE_CONTACT_LIST',
+          data: { id }
+        });
       },
       createCampaign: async (campaign) => {
         set((state) => ({ campaigns: [...state.campaigns, campaign] }));
-      await get().saveSettings();
+        await get().saveSettings({
+          type: 'ADD_CAMPAIGN',
+          data: campaign
+        });
     },
       updateCampaign: async (id, campaign) => {
         set((state) => ({
@@ -88,13 +128,19 @@ export const useStore = create<Store>()(
             c.id === id ? { ...c, ...campaign } : c
           ),
         }));
-        await get().saveSettings();
+        await get().saveSettings({
+          type: 'UPDATE_CAMPAIGN',
+          data: { id, ...campaign }
+        });
       },
       deleteCampaign: async (id) => {
         set((state) => ({
           campaigns: state.campaigns.filter((c) => c.id !== id)
         }));
-        await get().saveSettings();
+        await get().saveSettings({
+          type: 'DELETE_CAMPAIGN',
+          data: { id }
+        });
       },
       updateSmtpConfig: async (config) => {
         set((state) => ({ smtpConfig: { ...state.smtpConfig, ...config } }));
@@ -112,15 +158,14 @@ export const useStore = create<Store>()(
           set({ isLoading: false });
         }
       },
-      saveSettings: async () => {
+      saveSettings: async (action?: SaveSettingsAction) => {
         try {
           set({ isLoading: true, error: null });
           const state = get();
           await axios.post(`${API_URL}/api/settings`, {
-            templates: state.templates,
-            contactLists: state.contactLists,
-            campaigns: state.campaigns,
             smtpConfig: state.smtpConfig,
+            action,
+            data: action?.data
           });
         } catch (error) {
           set({ error: 'Failed to save settings' });          

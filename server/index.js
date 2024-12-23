@@ -210,113 +210,185 @@ app.post('/api/settings', async (req, res) => {
     });
   };
 
-  const { templates, contactLists, campaigns, smtpConfig } = req.body;
+  const { smtpConfig, action, data } = req.body;
 
   try {
     connection.connect();
-    
-    // Start transaction
     await promiseQuery('START TRANSACTION');
 
-    // Update SMTP config
-    await promiseQuery(
-      `UPDATE smtp_config 
-       SET host = ?, port = ?, username = ?, password = ?, 
-           fromEmail = ?, fromName = ? 
-       WHERE id = 1`,
-      [smtpConfig.host, smtpConfig.port, smtpConfig.username, 
-       smtpConfig.password, smtpConfig.fromEmail, smtpConfig.fromName]
-    );
-
-    // Handle templates
-    await promiseQuery('DELETE FROM templates');
-    if (templates.length > 0) {
-      const templateValues = templates.map(t => 
-        [t.id, t.name, t.content]
-      );
+    // Handle SMTP config update if provided
+    if (smtpConfig) {
       await promiseQuery(
-        'INSERT INTO templates (id, name, content) VALUES ?',
-        [templateValues]
+        `UPDATE smtp_config 
+         SET host = ?, port = ?, username = ?, password = ?, 
+             fromEmail = ?, fromName = ? 
+         WHERE id = 1`,
+        [smtpConfig.host, smtpConfig.port, smtpConfig.username, 
+         smtpConfig.password, smtpConfig.fromEmail, smtpConfig.fromName]
       );
     }
 
-    // Handle contact lists and contacts
-    await promiseQuery('DELETE FROM contacts');
-    await promiseQuery('DELETE FROM contact_lists');
-    
-    if (contactLists.length > 0) {
-      // Insert contact lists
-      const contactListValues = contactLists.map(cl => 
-        [cl.id, cl.name]
-      );
-      await promiseQuery(
-        'INSERT INTO contact_lists (id, name) VALUES ?',
-        [contactListValues]
-      );
+    // Handle other actions based on action type
+    if (action && data) {
+      console.log("ACTION:", action);
+      console.log("DATA:", data);
+      switch (action.type) {
+        case 'ADD_TEMPLATE':
+          await promiseQuery(
+            'INSERT INTO templates (id, name, content) VALUES (?, ?, ?)',
+            [data.id, data.name, data.content]
+          );
+          break;
 
-      // Insert contacts
-      const contactValues = contactLists.flatMap(cl =>
-        cl.contacts.map(c => 
-          [c.id, c.name, c.email, cl.id]
-        )
-      );
-      if (contactValues.length > 0) {
-        await promiseQuery(
-          'INSERT INTO contacts (id, name, email, contact_list_id) VALUES ?',
-          [contactValues]
-        );
-      }
-    }
+        case 'UPDATE_TEMPLATE':
+          // Build the query dynamically based on what fields are provided
+          const updateFields = [];
+          const updateValues = [];
 
-    // Handle campaigns
-    // First, clear existing errors
-    await promiseQuery('DELETE FROM errors');
-    await promiseQuery('DELETE FROM campaigns');
+          if (data.name !== undefined) {
+            updateFields.push('name = ?');
+            updateValues.push(data.name);
+          }
+          if (data.content !== undefined) {
+            updateFields.push('content = ?');
+            updateValues.push(data.content);
+          }
 
-    if (campaigns.length > 0) {
-      // Insert campaigns
-      const campaignValues = campaigns.map(c => [
-        c.id,
-        c.name,
-        c.subject,
-        c.templateId,
-        c.contactListId,
-        c.status,
-        c.sentCount,
-        c.totalCount
-      ]);
-      
-      await promiseQuery(
-        `INSERT INTO campaigns 
-         (id, name, subject, template_id, contact_list_id, 
-          status, sent_count, total_count) 
-         VALUES ?`,
-        [campaignValues]
-      );
+          // Add the id for the WHERE clause
+          updateValues.push(data.id);
 
-      // Insert errors if they exist
-      for (const campaign of campaigns) {
-        if (campaign.error) {
-          const errors = JSON.parse(campaign.error);
-          if (Array.isArray(errors) && errors.length > 0) {
-            const errorValues = errors.map(err => 
-              [err.email, err.error, campaign.id]
+          // Only proceed if there are fields to update
+          if (updateFields.length > 0) {
+            const updateQuery = `
+              UPDATE templates 
+              SET ${updateFields.join(', ')} 
+              WHERE id = ?
+            `;
+            await promiseQuery(updateQuery, updateValues);
+          }
+          break;
+
+        case 'DELETE_TEMPLATE':
+          await promiseQuery('DELETE FROM templates WHERE id = ?', [data.id]);
+          break;
+
+        case 'ADD_CONTACT_LIST':
+          await promiseQuery(
+            'INSERT INTO contact_lists (id, name) VALUES (?, ?)',
+            [data.id, data.name]
+          );
+          if (data.contacts && data.contacts.length > 0) {
+            const contactValues = data.contacts.map(c => 
+              [c.id, c.name, c.email, data.id]
             );
             await promiseQuery(
-              'INSERT INTO errors (email, error, campaign_id) VALUES ?',
-              [errorValues]
+              'INSERT INTO contacts (id, name, email, contact_list_id) VALUES ?',
+              [contactValues]
             );
           }
-        }
+          break;
+
+        case 'UPDATE_CONTACT_LIST':
+          if (data.contacts) {
+            // Delete existing contacts and insert new ones
+            await promiseQuery('DELETE FROM contacts WHERE contact_list_id = ?', [data.id]);
+            if (data.contacts.length > 0) {
+              const contactValues = data.contacts.map(c => 
+                [c.id, c.name, c.email, data.id]
+              );
+              await promiseQuery(
+                'INSERT INTO contacts (id, name, email, contact_list_id) VALUES ?',
+                [contactValues]
+              );
+            }
+          }
+          break;
+
+        case 'DELETE_CONTACT_LIST':
+          // Contacts will be deleted automatically due to foreign key constraint
+          await promiseQuery('DELETE FROM contact_lists WHERE id = ?', [data.id]);
+          break;
+
+        case 'ADD_CAMPAIGN':
+          await promiseQuery(
+            `INSERT INTO campaigns 
+             (id, name, subject, template_id, contact_list_id, 
+              status, sent_count, total_count) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [data.id, data.name, data.subject, data.templateId,
+             data.contactListId, data.status, data.sentCount, data.totalCount]
+          );
+          if (data.error) {
+            const errors = JSON.parse(data.error);
+            if (Array.isArray(errors) && errors.length > 0) {
+              const errorValues = errors.map(err => 
+                [err.email, err.error, data.id]
+              );
+              await promiseQuery(
+                'INSERT INTO errors (email, error, campaign_id) VALUES ?',
+                [errorValues]
+              );
+            }
+          }
+          break;
+
+        case 'UPDATE_CAMPAIGN':
+          // Build the query dynamically based on what fields are provided
+          const updateCampaignFields = [];
+          const updateCampaignValues = [];
+
+          if (data.status !== undefined) {
+            updateCampaignFields.push('status = ?');
+            updateCampaignValues.push(data.status);
+          }
+          if (data.sentCount !== undefined) {
+            updateCampaignFields.push('sent_count = ?');
+            updateCampaignValues.push(data.sentCount);
+          }
+
+          // Add the id for the WHERE clause
+          updateCampaignValues.push(data.id);
+
+          // Only proceed if there are fields to update
+          if (updateCampaignFields.length > 0) {
+            const updateCampaignQuery = `
+              UPDATE campaigns 
+              SET ${updateCampaignFields.join(', ')} 
+              WHERE id = ?
+            `;
+            await promiseQuery(updateCampaignQuery, updateCampaignValues);
+          }
+
+          if (data.error !== undefined) {
+            await promiseQuery('DELETE FROM errors WHERE campaign_id = ?', [data.id]);
+            if (data.error) {
+              const errors = JSON.parse(data.error);
+              if (Array.isArray(errors) && errors.length > 0) {
+                const errorValues = errors.map(err => 
+                  [err.email, err.error, data.id]
+                );
+                await promiseQuery(
+                  'INSERT INTO errors (email, error, campaign_id) VALUES ?',
+                  [errorValues]
+                );
+              }
+            }
+          }
+          break;
+
+        case 'DELETE_CAMPAIGN':
+          // Errors will be deleted automatically due to foreign key constraint
+          await promiseQuery('DELETE FROM campaigns WHERE id = ?', [data.id]);
+          break;
+
+        default:
+          throw new Error(`Unknown action type: ${action.type}`);
       }
     }
 
-    // Commit transaction
     await promiseQuery('COMMIT');
-    
     res.json({ message: 'Settings saved successfully' });
   } catch (error) {
-    // Rollback on error
     await promiseQuery('ROLLBACK');
     console.error('Error saving settings:', error);
     res.status(500).json({ 

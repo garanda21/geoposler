@@ -111,7 +111,9 @@ export const CampaignManager: React.FC = () => {
       }
     }
 
-    const status = errors.length > 0 ? 'completed with errors' : 'completed';
+    const status = errors.length > 0 
+    ? (successCount === 0 ? 'failed' : 'completed with errors') 
+    : 'completed';
     updateCampaign(campaignId, {
       status,
       sentCount: successCount,
