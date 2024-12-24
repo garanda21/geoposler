@@ -1,11 +1,27 @@
 import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
-import mysql from 'mysql';  // Changed to import
+import mysql from 'mysql';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Validate DB environment variables
+const requiredDbVars = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
+const missingVars = requiredDbVars.filter(varName => !process.env[varName]);
+
+if (missingVars.length > 0) {
+  throw new Error(`Missing required database environment variables: ${missingVars.join(', ')}`);
+}
+
+// Database configuration
+const dbConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+};
 
 app.post('/api/verify-smtp', async (req, res) => {
   const config = req.body;
@@ -64,12 +80,7 @@ app.post('/api/send-email', async (req, res) => {
 //Endpoints for connect to a mySQL database and get settings for later use on the app useStore.ts
 app.get('/api/settings', async (req, res) => {
   //const mysql = require('mysql');
-  const connection = mysql.createConnection({
-    host: '10.70.29.123',
-    user: "root", //username  for the database   
-    password: 'mypassword', //password for the database
-    database: 'geoposler'
-  });
+  const connection = mysql.createConnection(dbConfig);
   const promiseQuery = (sql) => {
     return new Promise((resolve, reject) => {
       connection.query(sql, (error, results) => {
@@ -194,12 +205,7 @@ app.get('/api/settings', async (req, res) => {
 });
 
 app.post('/api/settings', async (req, res) => {
-  const connection = mysql.createConnection({
-    host: '10.70.29.123',
-    user: "root", //username  for the database   
-    password: 'mypassword', //password for the database
-    database: 'geoposler'
-  });
+  const connection = mysql.createConnection(dbConfig);
 
   const promiseQuery = (sql, values = []) => {
     return new Promise((resolve, reject) => {
@@ -402,4 +408,9 @@ app.post('/api/settings', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log('Database config:', {
+    host: dbConfig.host,
+    user: dbConfig.user,
+    database: dbConfig.database
+  });
 });
