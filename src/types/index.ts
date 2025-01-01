@@ -27,6 +27,7 @@ export interface Campaign {
   status: 'draft' | 'sending' | 'completed' | 'failed' | 'completed with errors';
   sentCount: number;
   totalCount: number;
+  createDate?: string;
   error?: string;
 }
 

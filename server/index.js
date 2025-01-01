@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
 import mysql from 'mysql';
+import { format } from 'date-fns';
 
 const app = express();
 app.use(cors());
@@ -118,7 +119,8 @@ app.get('/api/settings', async (req, res) => {
         cl.name as contactListName,
         c.status,
         c.sent_count as sentCount,
-        c.total_count as totalCount
+        c.total_count as totalCount,
+        c.create_date as createDate
       FROM campaigns c
       LEFT JOIN templates t ON c.template_id = t.id
       LEFT JOIN contact_lists cl ON c.contact_list_id = cl.id
@@ -182,6 +184,7 @@ app.get('/api/settings', async (req, res) => {
         status: c.status,
         sentCount: c.sentCount,
         totalCount: c.totalCount,
+        createDate: format(new Date(c.createDate), 'dd/MM/yyyy HH:mm:ss'),
         error: c.error
       })),
       smtpConfig: {
@@ -316,13 +319,17 @@ app.post('/api/settings', async (req, res) => {
           break;
 
         case 'ADD_CAMPAIGN':
+          // Convert the formatted date string back to MySQL datetime format
+          const parsedDate = new Date(data.createDate);
+          const mysqlDateTime = format(parsedDate, 'yyyy-MM-dd HH:mm:ss');
+          
           await promiseQuery(
             `INSERT INTO campaigns 
              (id, name, subject, template_id, contact_list_id, 
-              status, sent_count, total_count) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+              status, sent_count, total_count, create_date) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [data.id, data.name, data.subject, data.templateId,
-             data.contactListId, data.status, data.sentCount, data.totalCount]
+             data.contactListId, data.status, data.sentCount, data.totalCount, mysqlDateTime]
           );
           if (data.error) {
             const errors = JSON.parse(data.error);

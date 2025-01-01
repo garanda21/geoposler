@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
-import { Play, Pause, CheckCircle, AlertCircle, Trash2, Info } from 'lucide-react';
+import { Play, Pause, CheckCircle, Trash2, Info, RotateCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { sendEmail } from '../utils/emailService';
 import { ErrorDetails } from './ErrorDetails';
 import { Campaign } from '../types';
+import { format, parse } from 'date-fns';
 
 export const CampaignManager: React.FC = () => {
   const { 
@@ -48,6 +49,7 @@ export const CampaignManager: React.FC = () => {
       status: 'draft',
       sentCount: 0,
       totalCount: selectedContactList.contacts.length,
+      createDate: new Date().toISOString()
     };
 
     createCampaign(campaign);
@@ -212,6 +214,9 @@ export const CampaignManager: React.FC = () => {
                 Campaign
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Date
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Template
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -229,11 +234,24 @@ export const CampaignManager: React.FC = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {campaigns.map((campaign) => (
+          {campaigns.map((campaign) => {
+            const parsedDate = campaign.createDate
+              ? parse(campaign.createDate, 'dd/MM/yyyy HH:mm:ss', new Date())
+              : null;
+
+            return (
               <tr key={campaign.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{campaign.name}</div>
                   <div className="text-sm text-gray-500">{campaign.subject}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">
+                    {parsedDate && parsedDate?.getTime() > 0 ? format(parsedDate, 'dd/MM/yyyy') : '-'}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {parsedDate && parsedDate?.getTime() > 0 ? format(parsedDate, 'HH:mm:ss') : '-'}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {campaign.templateName}
@@ -293,7 +311,13 @@ export const CampaignManager: React.FC = () => {
                     <CheckCircle className="h-5 w-5 text-green-600" />
                   )}
                   {campaign.status === 'failed' && (
-                    <AlertCircle className="h-5 w-5 text-red-600" />
+                    <button
+                      onClick={() => handleStartCampaign(campaign.id)}
+                      className="text-indigo-600 hover:text-indigo-900"
+                      title="Retry Campaign"
+                    >
+                      <RotateCw className="h-5 w-5 text-red-600" />
+                    </button>
                   )}
                   {campaign.status !== 'sending' && (
                     <button
@@ -306,8 +330,9 @@ export const CampaignManager: React.FC = () => {
                   )}
                 </td>
               </tr>
-            ))}
-          </tbody>
+            );
+          })}
+        </tbody>
         </table>
       </div>
 
