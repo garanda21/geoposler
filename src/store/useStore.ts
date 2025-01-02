@@ -3,7 +3,9 @@ import { persist } from 'zustand/middleware';
 import { Template, Campaign, ContactList, SmtpConfig } from '../types';
 import axios from 'axios';
 
-const API_URL = 'http://10.70.29.123:3000';
+const api = axios.create({
+  baseURL: '/api',
+});
 
 type ActionType = 
     | 'ADD_TEMPLATE' 
@@ -149,7 +151,7 @@ export const useStore = create<Store>()(
       fetchSettings: async () => {
         try {
           set({ isLoading: true, error: null });
-          const response = await axios.get(`${API_URL}/api/settings`);
+          const response = await api.get('/settings');
           set(response.data);
         } catch (error) {
           set({ error: 'Failed to fetch settings' });
@@ -162,7 +164,7 @@ export const useStore = create<Store>()(
         try {
           set({ isLoading: true, error: null });
           const state = get();
-          await axios.post(`${API_URL}/api/settings`, {
+          await api.post('/settings', {
             smtpConfig: state.smtpConfig,
             action,
             data: action?.data

@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { EmailContact, SmtpConfig, SendEmailResponse } from '../types';
 
-const API_URL = 'http://10.70.29.123:3000';
+const api = axios.create({
+  baseURL: '/api',
+});
 
 export const verifySmtpConnection = async (config: SmtpConfig): Promise<SendEmailResponse> => {
   try {
-    const response = await axios.post(`${API_URL}/api/verify-smtp`, config);
+    const response = await api.post('/verify-smtp', config);
     return response.data;
   } catch (error: any) {
     return {
@@ -22,7 +24,7 @@ export const sendEmail = async (
   smtpConfig: SmtpConfig
 ): Promise<SendEmailResponse> => {
   try {
-    const response = await axios.post(`${API_URL}/api/send-email`, {
+    const response = await api.post('/send-email', {
       contact,
       subject,
       content,
