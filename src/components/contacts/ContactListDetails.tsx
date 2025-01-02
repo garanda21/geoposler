@@ -50,9 +50,19 @@ export const ContactListDetails: React.FC<Props> = ({
   };
 
   const handleAddContact = (newContact: EmailContact) => {
+    const emailExists = contactList.contacts.some(
+      contact => contact.email.toLowerCase() === newContact.email.toLowerCase()
+    );
+
+    if (emailExists) {
+      toast.error('Email address already exists');
+      return;
+    }
+
     const updatedContacts = [...contactList.contacts, newContact];
     onUpdate(updatedContacts);
     setIsAddingContact(false);
+    toast.success('Contact added successfully');
   };
 
   return (

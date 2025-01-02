@@ -299,16 +299,30 @@ app.post('/api/settings', async (req, res) => {
 
         case 'UPDATE_CONTACT_LIST':
           if (data.contacts) {
-            // Delete existing contacts and insert new ones
-            await promiseQuery('DELETE FROM contacts WHERE contact_list_id = ?', [data.id]);
+            // Delete contacts that are no longer in the list
+            const newEmailList = data.contacts.map(c => c.email);
+            await promiseQuery(
+              'DELETE FROM contacts WHERE contact_list_id = ? AND email NOT IN (?)',
+              [data.id, newEmailList]
+            );
+
+            // Insert only new contacts that don't exist
             if (data.contacts.length > 0) {
-              const contactValues = data.contacts.map(c => 
-                [c.id, c.name, c.email, data.id]
-              );
-              await promiseQuery(
-                'INSERT INTO contacts (id, name, email, contact_list_id) VALUES ?',
-                [contactValues]
-              );
+              for (const contact of data.contacts) {
+          // Check if contact already exists
+          const existing = await promiseQuery(
+            'SELECT id FROM contacts WHERE email = ? AND contact_list_id = ?',
+            [contact.email, data.id]
+          );
+
+          // Only insert if contact doesn't exist
+          if (existing.length === 0) {
+            await promiseQuery(
+              'INSERT INTO contacts (id, name, email, contact_list_id) VALUES (?, ?, ?, ?)',
+              [contact.id, contact.name, contact.email, data.id]
+            );
+          }
+              }
             }
           }
           break;

@@ -20,7 +20,7 @@ export const ContactsTab: React.FC = () => {
     addContactList(newList);
     setSelectedListId(newList.id);
     setIsCreating(false);
-    toast.success('Contact list created successfully');
+    //toast.success('Contact list created successfully');
   };
 
   const handleUpdateContacts = (contacts: EmailContact[]) => {

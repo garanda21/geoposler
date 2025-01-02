@@ -33,7 +33,7 @@ export const AddContactForm: React.FC<Props> = ({ onAdd, onCancel }) => {
     onAdd(newContact);
     setName('');
     setEmail('');
-    toast.success('Contact added successfully');
+    //toast.success('Contact added successfully');
   };
 
   return (
