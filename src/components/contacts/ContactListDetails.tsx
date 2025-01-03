@@ -49,20 +49,35 @@ export const ContactListDetails: React.FC<Props> = ({
     toast.success('Contact deleted successfully');
   };
 
-  const handleAddContact = (newContact: EmailContact) => {
-    const emailExists = contactList.contacts.some(
-      contact => contact.email.toLowerCase() === newContact.email.toLowerCase()
-    );
-
-    if (emailExists) {
-      toast.error('Email address already exists');
+  const handleAddContacts = (newContacts: EmailContact[]) => {
+    if (newContacts.length === 1 && contactList.contacts.some(existing => 
+      existing.email.toLowerCase() === newContacts[0].email.toLowerCase()
+    )) {
+      toast.error('Email address already exists', {duration: 5000});
       return;
     }
-
-    const updatedContacts = [...contactList.contacts, newContact];
+    else
+    {
+      // Remove duplicates and contacts that already exist in contactList
+      const uniqueNewContacts = newContacts.filter(
+        newContact => !contactList.contacts.some(
+          existing => existing.email.toLowerCase() === newContact.email.toLowerCase()
+        ) && newContacts.findIndex(
+          c => c.email.toLowerCase() === newContact.email.toLowerCase()
+        ) === newContacts.indexOf(newContact)
+      );
+      if (uniqueNewContacts.length !== newContacts.length) {
+        toast('Duplicate or existing email addresses were removed', {
+          icon: '⚠️',
+          duration: 5000,
+        });
+      }
+      newContacts = uniqueNewContacts;
+    }
+    const updatedContacts = [...contactList.contacts, ...newContacts];
     onUpdate(updatedContacts);
     setIsAddingContact(false);
-    toast.success('Contact added successfully');
+    //toast.success('Contact added successfully');
   };
 
   return (
@@ -80,7 +95,7 @@ export const ContactListDetails: React.FC<Props> = ({
 
       {isAddingContact && (
         <AddContactForm
-          onAdd={handleAddContact}
+          onAdd={handleAddContacts}
           onCancel={() => setIsAddingContact(false)}
         />
       )}
