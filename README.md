@@ -3,7 +3,19 @@
 
 Is a Dockerized email campaign management application that allows users to create templates, manage contact lists, and send HTML-based emails via SMTP. It includes features to simplify email marketing campaigns and integrates seamlessly with a MySQL database for managing data.
 
----
+<p align="center">
+   <img src="https://github.com/user-attachments/assets/7aec2d16-1d45-4194-9b52-9154f96ec35f" alt="Image 2" width="50%">
+  
+</p>
+
+<p align="center">
+   <img src="https://github.com/user-attachments/assets/15f3c4ab-8056-44cc-83e0-02ecff1609d7" width="40%" style="margin-right: 5px;">   
+  
+<img src="https://github.com/user-attachments/assets/e77a805b-7292-4e49-987f-0115662335e8"  width="40%"/>
+
+</p>
+
+
 
 ## Features
 
