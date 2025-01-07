@@ -52,11 +52,11 @@ Is a Dockerized email campaign management application that allows users to creat
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/garanda21/Geoposler.git
+   git clone https://github.com/garanda21/geoposler.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd Geoposler
+   cd geoposler
    ```
 3. Set up the `.env` file with the required variables:
    ```env
@@ -88,7 +88,8 @@ services:
       - DB_PASSWORD=mypassword
       - DB_NAME=mycooldb
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
 
   mysql:
@@ -101,12 +102,17 @@ services:
       MYSQL_DATABASE: mycooldb
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   mysql_data:
 ```
-
 ---
+**IMPORTANT NOTICE**:  The `mySQL` database service must be up and in a healthy state before starting the Geoposler service to ensure a successful connection to the database, using docker-compose you should add `depends_on` and `healthcheck` properties.
 
 ## Tech Stack
 
@@ -119,7 +125,7 @@ volumes:
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENCE).
 
 ---
 
