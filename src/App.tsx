@@ -37,7 +37,7 @@ function App() {
         <footer className="mt-auto border-t border-gray-200 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex justify-between items-center text-sm text-gray-500">
-              <span>Version {import.meta.env.PACKAGE_VERSION || '1.0.0'}</span>
+              <span>Version {import.meta.env.PACKAGE_VERSION || '1.0.1'}</span>
               <a 
                 href="https://github.com/garanda21/Geoposler"
                 target="_blank"

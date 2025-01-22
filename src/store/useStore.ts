@@ -62,6 +62,7 @@ export const useStore = create<Store>()(
         password: '',
         fromEmail: '',
         fromName: '',
+        useSSL: false
       },
       addTemplate: async (template) => {
         set((state) => ({ templates: [...state.templates, template] }));
