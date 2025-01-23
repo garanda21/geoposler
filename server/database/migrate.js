@@ -66,7 +66,13 @@ const migrations = [
   // Add initial SMTP config if needed
   `INSERT INTO smtp_config (id, host, port, username, password, fromEmail, fromName)
    SELECT 1, 'smtp.example.com', 587, 'default', 'default', 'no-reply@example.com', 'System'
-   WHERE NOT EXISTS (SELECT 1 FROM smtp_config WHERE id = 1)`
+   WHERE NOT EXISTS (SELECT 1 FROM smtp_config WHERE id = 1)`,
+
+   //Modify table and add new column useSSL
+  `ALTER TABLE smtp_config ADD COLUMN useSSL BOOLEAN DEFAULT 0 NOT NULL`,
+
+  //Update smtp_config table and set useSSL to 0 if port is 587 or 1 if port is 465
+  `UPDATE smtp_config SET useSSL = (SELECT CASE WHEN port = 465 THEN 1 ELSE 0 END) WHERE id = 1`
 ];
 
 async function runMigrations() {

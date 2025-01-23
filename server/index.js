@@ -19,7 +19,7 @@ app.post('/api/verify-smtp', async (req, res) => {
     const transporter = nodemailer.createTransport({
       host: config.host,
       port: config.port,
-      secure: config.port === 465,
+      secure: config.useSSL,
       auth: {
         user: config.username,
         pass: config.password,
@@ -43,7 +43,7 @@ app.post('/api/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port,
-      secure: smtpConfig.port === 465,
+      secure: smtpConfig.useSSL,
       auth: {
         user: smtpConfig.username,
         pass: smtpConfig.password,
@@ -131,7 +131,8 @@ app.get('/api/settings', async (req, res) => {
       username: '',
       password: '',
       fromEmail: '',
-      fromName: ''
+      fromName: '',
+      useSSL: false
     };
 
     // Construct the response object
@@ -170,7 +171,8 @@ app.get('/api/settings', async (req, res) => {
         username: smtp.username,
         password: smtp.password,
         fromEmail: smtp.fromEmail,
-        fromName: smtp.fromName
+        fromName: smtp.fromName,
+        useSSL: smtp.useSSL,
       }
     };
 
@@ -199,10 +201,10 @@ app.post('/api/settings', async (req, res) => {
           await pool.query(
             `UPDATE smtp_config
             SET host = ?, port = ?, username = ?, password = ?, 
-                fromEmail = ?, fromName = ? 
+                fromEmail = ?, fromName = ?, useSSL = ?
             WHERE id = 1`,
             [smtpConfig.host, smtpConfig.port, smtpConfig.username, 
-            smtpConfig.password, smtpConfig.fromEmail, smtpConfig.fromName]
+            smtpConfig.password, smtpConfig.fromEmail, smtpConfig.fromName, smtpConfig.useSSL]
           );
         }
         if (action && data) {

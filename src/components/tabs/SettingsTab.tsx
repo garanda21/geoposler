@@ -9,14 +9,30 @@ export const SettingsTab: React.FC = () => {
   const { smtpConfig, updateSmtpConfig, saveSettings,  isLoading, error } = useStore();
   const [formData, setFormData] = useState<SmtpConfig>(smtpConfig);
 
+  // Constants for SMTP ports
+  const SSL_PORT = 465;
+  const NON_SSL_PORT = 587;
+
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === 'port' ? parseInt(value) : value
-    }));
+    const target = e.target as HTMLInputElement;
+    const { name } = target;
+    
+    if (target.type === 'checkbox' && name === 'useSSL') {
+      const isSSL = target.checked;
+      setFormData(prev => ({
+        ...prev,
+        [name]: target.checked,
+        port: isSSL ? SSL_PORT : NON_SSL_PORT
+      }));
+    } else {
+      const value = target.type === 'number' ? parseInt(target.value) : target.value;
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -52,17 +68,34 @@ export const SettingsTab: React.FC = () => {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              SMTP Port
-            </label>
-            <input
-              type="number"
-              name="port"
-              value={formData.port}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
+          <div className="flex flex-col">
+            <div className="flex items-center">              
+              <div className="flex-2 ml-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Port
+                </label>
+                <input
+                  type="number"
+                  name="port"
+                  value={formData.port}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+                <div className="mt-1 text-xs text-gray-500">
+                  {formData.useSSL ? 'Using SSL port (465)' : 'Using TLS/STARTTLS port (587)'}
+                </div>
+              </div>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="useSSL"
+                  checked={formData.useSSL}
+                  onChange={handleInputChange}
+                  className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                />
+                <span className="text-sm font-medium text-gray-700">Use SSL</span>
+              </label>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
