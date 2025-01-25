@@ -1,10 +1,12 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Settings, Send, FileText, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export const Navigation: React.FC = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { t } = useTranslation();
 
   return (
     <div className="flex space-x-8 mb-8">
@@ -17,7 +19,7 @@ export const Navigation: React.FC = () => {
         }`}
       >
         <FileText className="h-5 w-5" />
-        <span>Templates</span>
+        <span>{t('templates.title')}</span>
       </NavLink>
       <NavLink
         to="/contacts"
@@ -28,7 +30,7 @@ export const Navigation: React.FC = () => {
         }`}
       >
         <Users className="h-5 w-5" />
-        <span>Contacts</span>
+        <span>{t('contacts.title')}</span>
       </NavLink>
       <NavLink
         to="/campaigns"
@@ -39,7 +41,7 @@ export const Navigation: React.FC = () => {
         }`}
       >
         <Send className="h-5 w-5" />
-        <span>Campaigns</span>
+        <span>{t('campaigns.title')}</span>
       </NavLink>
       <NavLink
         to="/settings"
@@ -50,7 +52,7 @@ export const Navigation: React.FC = () => {
         }`}
       >
         <Settings className="h-5 w-5" />
-        <span>Settings</span>
+        <span>{t('settings.title')}</span>
       </NavLink>
     </div>
   );

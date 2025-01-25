@@ -3,8 +3,10 @@ import { Upload } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { EmailContact } from '../types';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 export const ContactsUploader: React.FC = () => {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { importContacts } = useStore();
 
@@ -28,9 +30,9 @@ export const ContactsUploader: React.FC = () => {
             };
           });
         importContacts(contacts);
-        toast.success(`${contacts.length} contacts imported successfully`);
+        toast.success(t('contacts.uploader.messages.success', { 0: contacts.length }));
       } catch (error) {
-        toast.error('Error importing contacts. Please check the file format.');
+        toast.error(t('contacts.uploader.messages.error'));
       }
     };
     reader.readAsText(file);
@@ -50,10 +52,10 @@ export const ContactsUploader: React.FC = () => {
         className="flex items-center justify-center w-full p-4 text-gray-600 hover:text-indigo-600"
       >
         <Upload className="mr-2" />
-        Upload Contact List (CSV)
+        {t('contacts.uploader.button')}
       </button>
       <p className="text-sm text-gray-500 mt-2">
-        Format: name;email@example.com (one per line)
+        {t('contacts.uploader.format')}
       </p>
     </div>
   );

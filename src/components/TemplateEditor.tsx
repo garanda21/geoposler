@@ -3,6 +3,7 @@ import Editor from '@monaco-editor/react';
 import { useStore } from '../store/useStore';
 import { RichTextEditor } from './editor/RichTextEditor';
 import { Code, Eye } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   templateId: string;
@@ -14,6 +15,7 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
   const [mode, setMode] = useState<'visual' | 'code'>('code');
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (template) {
@@ -42,7 +44,8 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
           value={name}
           onChange={(e) => handleNameChange(e.target.value)}
           className="flex-1 px-4 py-2 border rounded-md"
-          placeholder="Template Name"
+          placeholder={t('templates.editor.templateNamePlaceholder')}
+          aria-label={t('templates.editor.templateName')}
         />
         <div className="flex bg-gray-100 rounded-md p-1">
           <button
@@ -50,6 +53,7 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
             className={`px-3 py-1 rounded ${
               mode === 'visual' ? 'bg-white shadow' : ''
             }`}
+            title={t('templates.editor.visualMode')}
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -58,6 +62,7 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
             className={`px-3 py-1 rounded ${
               mode === 'code' ? 'bg-white shadow' : ''
             }`}
+            title={t('templates.editor.codeMode')}
           >
             <Code className="w-4 h-4" />
           </button>
@@ -85,7 +90,9 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
       )}
 
       <div className="bg-gray-50 border rounded-lg p-4">
-        <h3 className="text-sm font-medium text-gray-700 mb-2">Preview</h3>
+        <h3 className="text-sm font-medium text-gray-700 mb-2">
+          {t('templates.editor.preview')}
+        </h3>
         <div
           className="prose max-w-none"
           dangerouslySetInnerHTML={{ __html: content }}

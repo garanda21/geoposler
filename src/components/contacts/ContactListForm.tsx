@@ -3,6 +3,7 @@ import { EmailContact } from '../../types';
 import { parseCSV } from '../../utils/csvParser';
 import { Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onSave: (name: string, contacts: EmailContact[]) => void;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export const ContactListForm: React.FC<Props> = ({ onSave, onCancel }) => {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [csvContent, setCsvContent] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -23,9 +25,9 @@ export const ContactListForm: React.FC<Props> = ({ onSave, onCancel }) => {
       try {
         const content = e.target?.result as string;
         setCsvContent(content);
-        toast.success('CSV file loaded successfully');
+        toast.success(t('contacts.uploader.messages.success'));
       } catch (error) {
-        toast.error('Error reading CSV file');
+        toast.error(t('contacts.uploader.messages.error'));
       }
     };
     reader.readAsText(file);
@@ -35,19 +37,19 @@ export const ContactListForm: React.FC<Props> = ({ onSave, onCancel }) => {
     e.preventDefault();
 
     if (!name.trim()) {
-      toast.error('Please enter a list name');
+      toast.error(t('contacts.list.messages.nameRequired'));
       return;
     }
 
     if (!csvContent.trim()) {
-      toast.error('Please enter contact data or upload a CSV file');
+      toast.error(t('contacts.list.messages.dataRequired'));
       return;
     }
 
     try {
       const contacts = parseCSV(csvContent);
       onSave(name, contacts);
-      toast.success('Contact list created successfully');
+      toast.success(t('contacts.list.messages.listCreated'));
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -57,14 +59,14 @@ export const ContactListForm: React.FC<Props> = ({ onSave, onCancel }) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700">
-          List Name
+          {t('contacts.list.form.listName')}
         </label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          placeholder="My Contact List"
+          placeholder={t('contacts.list.form.listNamePlaceholder')}
         />
       </div>
 
@@ -83,16 +85,16 @@ export const ContactListForm: React.FC<Props> = ({ onSave, onCancel }) => {
             className="w-full flex items-center justify-center space-x-2 text-gray-600 hover:text-indigo-600"
           >
             <Upload className="w-5 h-5" />
-            <span>Upload CSV File</span>
+            <span>{t('contacts.uploader.button')}</span>
           </button>
           <p className="text-sm text-gray-500 text-center mt-2">
-            Format: name;email (one per line)
+            {t('contacts.uploader.format')}
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Contacts (CSV format: name;email)
+          <label className="block text-sm font-medium text-gray-700">            
+            {t('contacts.addContact.csvFormat')}
           </label>
           <textarea
             value={csvContent}
@@ -110,13 +112,13 @@ export const ContactListForm: React.FC<Props> = ({ onSave, onCancel }) => {
           onClick={onCancel}
           className="px-4 py-2 border rounded-md hover:bg-gray-50"
         >
-          Cancel
+          {t('contacts.list.actions.cancel')}
         </button>
         <button
           type="submit"
           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
         >
-          Save List
+          {t('contacts.list.form.saveList')}
         </button>
       </div>
     </form>

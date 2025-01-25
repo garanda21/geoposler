@@ -6,8 +6,10 @@ import { sendEmail } from '../utils/emailService';
 import { ErrorDetails } from './ErrorDetails';
 import { Campaign } from '../types';
 import { format, parse } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 export const CampaignManager: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     templates, 
     contactLists, 
@@ -26,7 +28,7 @@ export const CampaignManager: React.FC = () => {
 
   const handleCreateCampaign = () => {
     if (!newCampaignName || !selectedTemplateId || !selectedContactListId || !subject) {
-      toast.error('Please fill in all fields');
+      toast.error(t('campaigns.messages.fillFields'));
       return;
     }
 
@@ -34,7 +36,7 @@ export const CampaignManager: React.FC = () => {
     const selectedContactList = contactLists.find(cl => cl.id === selectedContactListId);
     
     if (!selectedTemplate || !selectedContactList) {
-      toast.error('Selected template or contact list not found');
+      toast.error(t('campaigns.messages.notFound'));
       return;
     }
 
@@ -57,7 +59,7 @@ export const CampaignManager: React.FC = () => {
     setSelectedTemplateId('');
     setSelectedContactListId('');
     setSubject('');
-    toast.success('Campaign created successfully');
+    toast.success(t('campaigns.messages.createSuccess'));
   };
 
   const handleStartCampaign = async (campaignId: string) => {
@@ -66,17 +68,17 @@ export const CampaignManager: React.FC = () => {
     const contactList = contactLists.find(cl => cl.id === campaign?.contactListId);
     
     if (!campaign || !template || !contactList) {
-      toast.error('Campaign, template, or contact list not found');
+      toast.error(t('campaigns.messages.notFound'));
       return;
     }
 
     if (!smtpConfig.host || !smtpConfig.username || !smtpConfig.password) {
-      toast.error('Please configure SMTP settings first');
+      toast.error(t('campaigns.messages.configureSmtp'));
       return;
     }
 
     if (!contactList.contacts.length) {
-      toast.error('No contacts available to send to');
+      toast.error(t('campaigns.messages.noContacts'));
       return;
     }
 
@@ -123,34 +125,34 @@ export const CampaignManager: React.FC = () => {
     });
 
     if (errors.length > 0) {
-      toast.error(`Campaign completed with ${errors.length} errors. ${successCount} emails sent successfully.`);
+      toast.error(t('campaigns.messages.completedWithErrors', { 0: errors.length, 1: successCount }));
     } else {
-      toast.success(`Campaign completed: ${successCount} emails sent successfully`);
+      toast.success(t('campaigns.messages.completedSuccess', { 0: successCount }));
     }
   };
 
   const handlePauseCampaign = (campaignId: string) => {
     updateCampaign(campaignId, { status: 'draft' });
-    toast.success('Campaign paused');
+    toast.success(t('campaigns.messages.pauseSuccess'));
   };
 
   const handleDeleteCampaign = (campaignId: string) => {
     const campaign = campaigns.find(c => c.id === campaignId);
     if (campaign?.status === 'sending') {
-      toast.error('Cannot delete a campaign while it is sending');
+      toast.error(t('campaigns.messages.cantDelete'));
       return;
     }
     deleteCampaign(campaignId);
-    toast.success('Campaign deleted successfully');
+    toast.success(t('campaigns.messages.deleteSuccess'));
   };
 
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold mb-4">Create New Campaign</h3>
+        <h3 className="text-lg font-semibold mb-4">{t('campaigns.newCampaign.title')}</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Campaign Name</label>
+            <label className="block text-sm font-medium text-gray-700">{t('campaigns.newCampaign.name')}</label>
             <input
               type="text"
               value={newCampaignName}
@@ -159,7 +161,7 @@ export const CampaignManager: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Subject</label>
+            <label className="block text-sm font-medium text-gray-700">{t('campaigns.newCampaign.subject')}</label>
             <input
               type="text"
               value={subject}
@@ -168,13 +170,13 @@ export const CampaignManager: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Template</label>
+            <label className="block text-sm font-medium text-gray-700">{t('campaigns.newCampaign.template')}</label>
             <select
               value={selectedTemplateId}
               onChange={(e) => setSelectedTemplateId(e.target.value)}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             >
-              <option value="">Select a template</option>
+              <option value="">{t('campaigns.newCampaign.selectTemplate')}</option>
               {templates.map((template) => (
                 <option key={template.id} value={template.id}>
                   {template.name}
@@ -183,16 +185,16 @@ export const CampaignManager: React.FC = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Contact List</label>
+            <label className="block text-sm font-medium text-gray-700">{t('campaigns.newCampaign.contactList')}</label>
             <select
               value={selectedContactListId}
               onChange={(e) => setSelectedContactListId(e.target.value)}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             >
-              <option value="">Select a contact list</option>
+              <option value="">{t('campaigns.newCampaign.selectContactList')}</option>
               {contactLists.map((list) => (
                 <option key={list.id} value={list.id}>
-                  {list.name} ({list.contacts.length} contacts)
+                  {list.name} ({list.contacts.length} {t('campaigns.newCampaign.contactCount')})
                 </option>
               ))}
             </select>
@@ -201,7 +203,7 @@ export const CampaignManager: React.FC = () => {
             onClick={handleCreateCampaign}
             className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
           >
-            Create Campaign
+            {t('campaigns.newCampaign.createButton')}
           </button>
         </div>
       </div>
@@ -211,25 +213,25 @@ export const CampaignManager: React.FC = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Campaign
+                {t('campaigns.table.campaign')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date
+                {t('campaigns.table.date')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Template
+                {t('campaigns.table.template')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Contact List
+                {t('campaigns.table.contactList')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
+                {t('campaigns.table.status')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Progress
+                {t('campaigns.table.progress')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
+                {t('campaigns.table.actions')}
               </th>
             </tr>
           </thead>
@@ -273,13 +275,13 @@ export const CampaignManager: React.FC = () => {
                         : 'bg-gray-100 text-gray-800'
                     }`}
                   >
-                    {campaign.status}
+                    {t(`campaigns.status.${campaign.status.replace(/\s+/g, '')}`)}
                   </span>
                   {campaign.error && (
                     <button
                       onClick={() => setShowErrors(campaign.id)}
                       className="ml-2 text-gray-500 hover:text-gray-700"
-                      title="View Errors"
+                      title={t('campaigns.actions.viewErrors')}
                     >
                       <Info className="w-4 h-4" />
                     </button>
@@ -293,7 +295,7 @@ export const CampaignManager: React.FC = () => {
                     <button
                       onClick={() => handleStartCampaign(campaign.id)}
                       className="text-indigo-600 hover:text-indigo-900"
-                      title="Start Campaign"
+                      title={t('campaigns.actions.start')}
                     >
                       <Play className="h-5 w-5" />
                     </button>
@@ -302,7 +304,7 @@ export const CampaignManager: React.FC = () => {
                     <button
                       onClick={() => handlePauseCampaign(campaign.id)}
                       className="text-yellow-600 hover:text-yellow-900"
-                      title="Pause Campaign"
+                      title={t('campaigns.actions.pause')}
                     >
                       <Pause className="h-5 w-5" />
                     </button>
@@ -314,7 +316,7 @@ export const CampaignManager: React.FC = () => {
                     <button
                       onClick={() => handleStartCampaign(campaign.id)}
                       className="text-indigo-600 hover:text-indigo-900"
-                      title="Retry Campaign"
+                      title={t('campaigns.actions.retry')}
                     >
                       <RotateCw className="h-5 w-5 text-red-600" />
                     </button>
@@ -323,7 +325,7 @@ export const CampaignManager: React.FC = () => {
                     <button
                       onClick={() => handleDeleteCampaign(campaign.id)}
                       className="text-red-600 hover:text-red-900 ml-2"
-                      title="Delete Campaign"
+                      title={t('campaigns.actions.delete')}
                     >
                       <Trash2 className="h-5 w-5" />
                     </button>

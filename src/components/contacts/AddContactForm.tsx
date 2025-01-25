@@ -3,6 +3,7 @@ import { EmailContact } from '../../types';
 import { parseCSV } from '../../utils/csvParser';
 import { Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onAdd: (contacts: EmailContact[]) => void;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export const AddContactForm: React.FC<Props> = ({ onAdd, onCancel }) => {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [csvContent, setCsvContent] = useState('');
@@ -31,12 +33,12 @@ export const AddContactForm: React.FC<Props> = ({ onAdd, onCancel }) => {
     }
 
     if (!name.trim() || !email.trim()) {
-      toast.error('Name and email are required');
+      toast.error(t('contacts.addContact.validation.nameEmail'));
       return;
     }
 
     if (!email.includes('@')) {
-      toast.error('Please enter a valid email address');
+      toast.error(t('contacts.addContact.validation.validEmail'));
       return;
     }
 
@@ -49,7 +51,7 @@ export const AddContactForm: React.FC<Props> = ({ onAdd, onCancel }) => {
     onAdd([newContact]);
     setName('');
     setEmail('');
-    //toast.success('Contact added successfully');
+    // Toast message will be shown by parent component
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,23 +75,27 @@ export const AddContactForm: React.FC<Props> = ({ onAdd, onCancel }) => {
     <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-4 rounded-lg">
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
+          <label className="block text-sm font-medium text-gray-700">
+            {t('contacts.addContact.name')}
+          </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="John Doe"
+            placeholder={t('contacts.addContact.namePlaceholder')}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Email</label>
+          <label className="block text-sm font-medium text-gray-700">
+            {t('contacts.addContact.email')}
+          </label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="john@example.com"
+            placeholder={t('contacts.addContact.emailPlaceholder')}
           />
         </div>
 
@@ -98,7 +104,9 @@ export const AddContactForm: React.FC<Props> = ({ onAdd, onCancel }) => {
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-gray-50 px-2 text-sm text-gray-500">Or import multiple contacts</span>
+            <span className="bg-gray-50 px-2 text-sm text-gray-500">
+              {t('contacts.addContact.importTitle')}
+            </span>
           </div>
         </div>
 
@@ -116,17 +124,17 @@ export const AddContactForm: React.FC<Props> = ({ onAdd, onCancel }) => {
             className="w-full flex items-center justify-center space-x-2 text-gray-600 hover:text-indigo-600"
           >
             <Upload className="w-5 h-5" />
-            <span>Upload CSV File</span>
+            <span>{t('contacts.addContact.uploadCSV')}</span>
           </button>
           <p className="text-sm text-gray-500 text-center mt-2">
-            Format: name;email (one per line)
+            {t('contacts.addContact.csvFormat')}
           </p>
         </div>
 
         {csvContent && (
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Preview CSV Content
+              {t('contacts.addContact.previewCSV')}
             </label>
             <textarea
               value={csvContent}
@@ -145,13 +153,13 @@ export const AddContactForm: React.FC<Props> = ({ onAdd, onCancel }) => {
           onClick={onCancel}
           className="px-4 py-2 border rounded-md hover:bg-gray-50"
         >
-          Cancel
+          {t('contacts.list.actions.cancel')}
         </button>
         <button
           type="submit"
           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
         >
-          {csvContent ? 'Import Contacts' : 'Add Contact'}
+          {csvContent ? t('contacts.uploader.button') : t('contacts.list.actions.addContact')}
         </button>
       </div>
     </form>

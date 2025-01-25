@@ -1,0 +1,172 @@
+{
+  "templates": {
+    "title": "Plantillas",
+    "emailTemplates": "Plantillas de Correo",
+    "uploadTemplate": "Subir Plantilla",
+    "newTemplate": "Nueva Plantilla",
+    "selectOrCreate": "Seleccione una plantilla o cree una nueva",
+    "messages": {
+      "uploadSuccess": "Plantilla subida exitosamente",
+      "createSuccess": "Nueva plantilla creada"
+    },
+    "editor": {
+      "templateName": "Nombre de la Plantilla",
+      "templateNamePlaceholder": "Ingrese nombre de la plantilla",
+      "visualMode": "Modo Visual",
+      "codeMode": "Modo Código",
+      "preview": "Vista Previa",
+      "richText": {
+        "bold": "Negrita",
+        "italic": "Cursiva",
+        "bulletList": "Lista con Viñetas",
+        "orderedList": "Lista Numerada",
+        "link": "Insertar Enlace",
+        "heading": "Encabezado",
+        "enterUrl": "Ingrese la URL"
+      }
+    },
+    "list": {
+      "deleteSuccess": "Plantilla eliminada exitosamente",
+      "deleteConfirm": "¿Está seguro de que desea eliminar esta plantilla?"
+    }
+  },
+  "contacts": {
+    "title": "Contactos",
+    "list": {
+      "title": "Listas de Contactos",
+      "newList": "Nueva Lista",
+      "contactCount": "{0} contactos",
+      "columns": {
+        "name": "Nombre",
+        "email": "Correo",
+        "actions": "Acciones"
+      },
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "addContact": "Agregar Contacto",
+        "deleteList": "Eliminar Lista"
+      },
+      "form": {
+        "listName": "Nombre de la Lista",
+        "listNamePlaceholder": "Mi Lista de Contactos",
+        "saveList": "Guardar Lista"
+      },
+      "messages": {
+        "selectContactList": "Seleccione una lista de contactos o cree una nueva",
+        "deleteSuccess": "Lista de contactos eliminada exitosamente",
+        "updateSuccess": "Contacto actualizado exitosamente",
+        "deleteContactSuccess": "Contacto eliminado exitosamente",
+        "duplicateEmail": "El correo electrónico ya existe",
+        "duplicatesRemoved": "Se eliminaron las direcciones de correo duplicadas o existentes",
+        "nameRequired": "Por favor ingrese un nombre para la lista",
+        "dataRequired": "Por favor ingrese datos de contacto o suba un archivo CSV",
+        "listCreated": "Lista de contactos creada exitosamente",
+        "contactAdded": "Contacto agregado exitosamente"
+      }
+    },
+    "addContact": {
+      "title": "Agregar Contacto",
+      "name": "Nombre",
+      "namePlaceholder": "Juan Pérez",
+      "email": "Correo",
+      "emailPlaceholder": "juan@ejemplo.com",
+      "importTitle": "O importar múltiples contactos",
+      "validation": {
+        "nameEmail": "El nombre y correo son obligatorios",
+        "validEmail": "Por favor ingrese un correo válido"
+      },
+      "uploadCSV": "Subir Archivo CSV",
+      "csvFormat": "Formato: nombre;correo (uno por línea)",
+      "previewCSV": "Vista previa del contenido CSV"
+    },
+    "uploader": {
+      "button": "Subir Archivo CSV",
+      "format": "Formato: nombre;correo (uno por línea)",
+      "preview": "Vista previa del contenido CSV",
+      "messages": {
+        "success": "Archivo CSV cargado exitosamente",
+        "error": "Error al leer el archivo CSV",
+        "importSuccess": "Contactos importados exitosamente"
+      }
+    }
+  },
+  "campaigns": {
+    "title": "Campañas",
+    "newCampaign": {
+      "title": "Crear Nueva Campaña",
+      "name": "Nombre de la Campaña",
+      "subject": "Asunto",
+      "template": "Plantilla",
+      "contactList": "Lista de Contactos",
+      "selectTemplate": "Seleccionar una plantilla",
+      "selectContactList": "Seleccionar una lista de contactos",
+      "contactCount": "contactos",
+      "createButton": "Crear Campaña"
+    },
+    "table": {
+      "campaign": "Campaña",
+      "date": "Fecha",
+      "template": "Plantilla",
+      "contactList": "Lista de Contactos",
+      "status": "Estado",
+      "progress": "Progreso",
+      "actions": "Acciones"
+    },
+    "status": {
+      "draft": "Borrador",
+      "sending": "Enviando",
+      "completed": "Completada",
+      "completedwitherrors": "Completada con errores",
+      "failed": "Fallida"
+    },
+    "actions": {
+      "start": "Iniciar Campaña",
+      "pause": "Pausar Campaña",
+      "retry": "Reintentar Campaña",
+      "delete": "Eliminar Campaña",
+      "viewErrors": "Ver Errores"
+    },
+    "errors": {
+      "title": "Errores de Campaña",
+      "close": "Cerrar",
+      "emailColumn": "Correo",
+      "errorColumn": "Error"
+    },
+    "messages": {
+      "fillFields": "Por favor complete todos los campos",
+      "notFound": "Plantilla o lista de contactos no encontrada",
+      "createSuccess": "Campaña creada exitosamente",
+      "deleteSuccess": "Campaña eliminada exitosamente",
+      "pauseSuccess": "Campaña pausada",
+      "cantDelete": "No se puede eliminar una campaña mientras se está enviando",
+      "configureSmtp": "Por favor configure los ajustes SMTP primero",
+      "noContacts": "No hay contactos disponibles para enviar",
+      "completedWithErrors": "Campaña completada con {0} errores. {1} emails enviados exitosamente.",
+      "completedSuccess": "Campaña completada: {0} emails enviados exitosamente"
+    }
+  },
+  "settings": {
+    "title": "Ajustes", 
+    "smtp": {
+      "title": "Configuración SMTP",
+      "host": "Servidor SMTP",
+      "port": "Puerto",
+      "useSSL": "Usar SSL",
+      "sslPortMessage": "Usando puerto SSL (465)",
+      "tlsPortMessage": "Usando puerto TLS/STARTTLS (587)",
+      "username": "Usuario",
+      "password": "Contraseña",
+      "fromEmail": "Correo remitente",
+      "fromName": "Nombre remitente",
+      "saveButton": "Guardar configuración",
+      "savingButton": "Guardando..."
+    },
+    "toast": {
+      "success": "¡Configuración guardada correctamente!",
+      "error": "Error al guardar la configuración"
+    }
+  }
+}

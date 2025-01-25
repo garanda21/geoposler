@@ -2,6 +2,7 @@ import React from 'react';
 import { useStore } from '../../store/useStore';
 import { Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   selectedId: string | null;
@@ -10,13 +11,16 @@ interface Props {
 
 export const TemplateList: React.FC<Props> = ({ selectedId, onSelect }) => {
   const { templates, deleteTemplate } = useStore();
+  const { t } = useTranslation();
 
   const handleDelete = (id: string) => {
-    deleteTemplate(id);
-    if (selectedId === id) {
-      onSelect(templates[0]?.id || '');
+    if (window.confirm(t('templates.list.deleteConfirm'))) {
+      deleteTemplate(id);
+      if (selectedId === id) {
+        onSelect(templates[0]?.id || '');
+      }
+      toast.success(t('templates.list.deleteSuccess'));
     }
-    toast.success('Template deleted successfully');
   };
 
   return (

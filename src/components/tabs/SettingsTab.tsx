@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { SmtpConfig } from '../../types';
 import { Loader2 } from 'lucide-react'; // Import from lucide-react for the spinner
@@ -8,6 +9,7 @@ import { Loader2 } from 'lucide-react'; // Import from lucide-react for the spin
 export const SettingsTab: React.FC = () => {
   const { smtpConfig, updateSmtpConfig, saveSettings,  isLoading, error } = useStore();
   const [formData, setFormData] = useState<SmtpConfig>(smtpConfig);
+  const { t } = useTranslation();
 
   // Constants for SMTP ports
   const SSL_PORT = 465;
@@ -39,16 +41,16 @@ export const SettingsTab: React.FC = () => {
     try {
       await updateSmtpConfig(formData);
       await saveSettings();
-      toast.success('Settings saved successfully!');
+      toast.success(t('settings.toast.success'));
     } catch (error) {
       console.error('Failed to save settings:', error);
-      toast.error('Failed to save settings');
+      toast.error(t('settings.toast.error'));
     }
   };
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">SMTP Settings</h2>
+      <h2 className="text-2xl font-bold">{t('settings.smtp.title')}</h2>
       {error && (
         <div className="bg-red-50 text-red-600 p-4 rounded-md">
           {error}
@@ -58,7 +60,7 @@ export const SettingsTab: React.FC = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              SMTP Host
+            {t('settings.smtp.host')}
             </label>
             <input
               type="text"
@@ -72,7 +74,7 @@ export const SettingsTab: React.FC = () => {
             <div className="flex items-center">              
               <div className="flex-2 ml-4">
                 <label className="block text-sm font-medium text-gray-700">
-                  Port
+                {t('settings.smtp.port')}
                 </label>
                 <input
                   type="number"
@@ -82,7 +84,7 @@ export const SettingsTab: React.FC = () => {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
                 <div className="mt-1 text-xs text-gray-500">
-                  {formData.useSSL ? 'Using SSL port (465)' : 'Using TLS/STARTTLS port (587)'}
+                  {formData.useSSL ? t('settings.smtp.sslPortMessage') : t('settings.smtp.tlsPortMessage')}
                 </div>
               </div>
               <label className="flex items-center space-x-2">
@@ -93,13 +95,13 @@ export const SettingsTab: React.FC = () => {
                   onChange={handleInputChange}
                   className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 />
-                <span className="text-sm font-medium text-gray-700">Use SSL</span>
+                <span className="text-sm font-medium text-gray-700">{t('settings.smtp.useSSL')}</span>
               </label>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Username
+            {t('settings.smtp.username')}
             </label>
             <input
               type="text"
@@ -111,7 +113,7 @@ export const SettingsTab: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Password
+            {t('settings.smtp.password')}
             </label>
             <input
               type="password"
@@ -123,7 +125,7 @@ export const SettingsTab: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              From Email
+            {t('settings.smtp.fromEmail')}
             </label>
             <input
               type="email"
@@ -135,7 +137,7 @@ export const SettingsTab: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              From Name
+            {t('settings.smtp.fromName')}
             </label>
             <input
               type="text"
@@ -157,7 +159,7 @@ export const SettingsTab: React.FC = () => {
             {isLoading && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
-            {isLoading ? 'Saving...' : 'Save Settings'}
+            {isLoading ? t('settings.smtp.savingButton') : t('settings.smtp.saveButton') }
           </button>
         </div>
       </div>
