@@ -1,0 +1,172 @@
+{
+  "templates": {
+    "title": "Vorlagen",
+    "emailTemplates": "E-Mail-Vorlagen",
+    "uploadTemplate": "Vorlage hochladen",
+    "newTemplate": "Neue Vorlage",
+    "selectOrCreate": "Wählen Sie eine Vorlage aus oder erstellen Sie eine neue",
+    "messages": {
+      "uploadSuccess": "Vorlage erfolgreich hochgeladen",
+      "createSuccess": "Neue Vorlage erstellt"
+    },
+    "editor": {
+      "templateName": "Vorlagenname",
+      "templateNamePlaceholder": "Vorlagennamen eingeben",
+      "visualMode": "Visueller Modus",
+      "codeMode": "Code-Modus",
+      "preview": "Vorschau",
+      "richText": {
+        "bold": "Fett",
+        "italic": "Kursiv",
+        "bulletList": "Aufzählung",
+        "orderedList": "Nummerierte Liste",
+        "link": "Link einfügen",
+        "heading": "Überschrift",
+        "enterUrl": "URL eingeben"
+      }
+    },
+    "list": {
+      "deleteSuccess": "Vorlage erfolgreich gelöscht",
+      "deleteConfirm": "Möchten Sie diese Vorlage wirklich löschen?"
+    }
+  },
+  "contacts": {
+    "title": "Kontakte",
+    "list": {
+      "title": "Kontaktlisten",
+      "newList": "Neue Liste",
+      "contactCount": "{0} Kontakte",
+      "columns": {
+        "name": "Name",
+        "email": "E-Mail",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "edit": "Bearbeiten",
+        "delete": "Löschen",
+        "save": "Speichern",
+        "cancel": "Abbrechen",
+        "addContact": "Kontakt hinzufügen",
+        "deleteList": "Liste löschen"
+      },
+      "form": {
+        "listName": "Listenname",
+        "listNamePlaceholder": "Meine Kontaktliste",
+        "saveList": "Liste speichern"
+      },
+      "messages": {
+        "selectContactList": "Wählen Sie eine Kontaktliste aus oder erstellen Sie eine neue",
+        "deleteSuccess": "Kontaktliste erfolgreich gelöscht",
+        "updateSuccess": "Kontakt erfolgreich aktualisiert",
+        "deleteContactSuccess": "Kontakt erfolgreich gelöscht",
+        "duplicateEmail": "E-Mail-Adresse existiert bereits",
+        "duplicatesRemoved": "Doppelte oder vorhandene E-Mail-Adressen wurden entfernt",
+        "nameRequired": "Bitte geben Sie einen Listennamen ein",
+        "dataRequired": "Bitte geben Sie Kontaktdaten ein oder laden Sie eine CSV-Datei hoch",
+        "listCreated": "Kontaktliste erfolgreich erstellt",
+        "contactAdded": "Kontakt erfolgreich hinzugefügt"
+      }
+    },
+    "addContact": {
+      "title": "Kontakt hinzufügen",
+      "name": "Name",
+      "namePlaceholder": "Max Mustermann",
+      "email": "E-Mail",
+      "emailPlaceholder": "max@beispiel.de",
+      "importTitle": "Oder mehrere Kontakte importieren",
+      "validation": {
+        "nameEmail": "Name und E-Mail sind erforderlich",
+        "validEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+      },
+      "uploadCSV": "CSV-Datei hochladen",
+      "csvFormat": "Format: Name;E-Mail (eine pro Zeile)",
+      "previewCSV": "CSV-Inhalt anzeigen"
+    },
+    "uploader": {
+      "button": "CSV-Datei hochladen",
+      "format": "Format: Name;E-Mail (eine pro Zeile)",
+      "preview": "CSV-Inhalt anzeigen",
+      "messages": {
+        "success": "CSV-Datei erfolgreich geladen",
+        "error": "Fehler beim Lesen der CSV-Datei",
+        "importSuccess": "Kontakte erfolgreich importiert"
+      }
+    }
+  },
+  "campaigns": {
+    "title": "Kampagnen",
+    "newCampaign": {
+      "title": "Neue Kampagne erstellen",
+      "name": "Kampagnenname",
+      "subject": "Betreff",
+      "template": "Vorlage",
+      "contactList": "Kontaktliste",
+      "selectTemplate": "Vorlage auswählen",
+      "selectContactList": "Kontaktliste auswählen",
+      "contactCount": "Kontakte",
+      "createButton": "Kampagne erstellen"
+    },
+    "table": {
+      "campaign": "Kampagne",
+      "date": "Datum",
+      "template": "Vorlage",
+      "contactList": "Kontaktliste",
+      "status": "Status",
+      "progress": "Fortschritt",
+      "actions": "Aktionen"
+    },
+    "status": {
+      "draft": "Entwurf",
+      "sending": "Wird gesendet",
+      "completed": "Abgeschlossen",
+      "completedwitherrors": "Abgeschlossen mit Fehlern",
+      "failed": "Fehlgeschlagen"
+    },
+    "actions": {
+      "start": "Kampagne starten",
+      "pause": "Pausieren",
+      "retry": "Erneut versuchen",
+      "delete": "Kampagne löschen",
+      "viewErrors": "Fehler anzeigen"
+    },
+    "messages": {
+      "fillFields": "Bitte füllen Sie alle Felder aus",
+      "notFound": "Ausgewählte Vorlage oder Kontaktliste nicht gefunden",
+      "createSuccess": "Kampagne erfolgreich erstellt",
+      "deleteSuccess": "Kampagne erfolgreich gelöscht",
+      "pauseSuccess": "Kampagne pausiert",
+      "cantDelete": "Kampagne kann während des Sendens nicht gelöscht werden",
+      "configureSmtp": "Bitte konfigurieren Sie zuerst die SMTP-Einstellungen",
+      "noContacts": "Keine Kontakte zum Senden verfügbar",
+      "completedWithErrors": "Kampagne mit {0} Fehlern abgeschlossen. {1} E-Mails erfolgreich gesendet.",
+      "completedSuccess": "Kampagne abgeschlossen: {0} E-Mails erfolgreich gesendet"
+    },
+    "errors": {
+      "title": "Kampagnenfehler",
+      "close": "Schließen",
+      "emailColumn": "E-Mail",
+      "errorColumn": "Fehler"
+    }
+  },
+  "settings": {      
+    "title": "Einstellungen",  
+    "smtp": {
+      "title": "SMTP-Einstellungen",
+      "host": "SMTP-Host",
+      "port": "Port",
+      "useSSL": "SSL verwenden",
+      "sslPortMessage": "SSL-Port (465) wird verwendet",
+      "tlsPortMessage": "TLS/STARTTLS-Port (587) wird verwendet",
+      "username": "Benutzername",
+      "password": "Passwort",
+      "fromEmail": "Absender-E-Mail",
+      "fromName": "Absender-Name",
+      "saveButton": "Einstellungen speichern",
+      "savingButton": "Wird gespeichert..."
+    },
+    "toast": {
+      "success": "Einstellungen erfolgreich gespeichert!",
+      "error": "Fehler beim Speichern der Einstellungen"
+    }
+  }
+}
