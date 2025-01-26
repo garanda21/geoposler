@@ -39,6 +39,7 @@ export interface SmtpConfig {
   fromName: string;
   fromEmail: string;
   useSSL: boolean;
+  useAuth: boolean;
 }
 
 export interface SendEmailResponse {
