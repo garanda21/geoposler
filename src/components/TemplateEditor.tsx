@@ -34,6 +34,22 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
     updateTemplate(templateId, { content: newContent });
   };
 
+  const previewContent = `
+    <html>
+      <head>
+        <style>
+          body { margin: 0; font-family: system-ui, sans-serif; }
+          .preview-content { padding: 1rem; }
+        </style>
+      </head>
+      <body>
+        <div class="preview-content">
+          ${content}
+        </div>
+      </body>
+    </html>
+  `;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center space-x-4">
@@ -86,9 +102,10 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
 
       <div className="bg-gray-50 border rounded-lg p-4">
         <h3 className="text-sm font-medium text-gray-700 mb-2">Preview</h3>
-        <div
-          className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: content }}
+        <iframe
+          srcDoc={previewContent}
+          className="w-full min-h-[400px] border-0"
+          title="Template Preview"
         />
       </div>
     </div>
