@@ -72,7 +72,13 @@ const migrations = [
   `ALTER TABLE smtp_config ADD COLUMN useSSL BOOLEAN DEFAULT 0 NOT NULL`,
 
   //Update smtp_config table and set useSSL to 0 if port is 587 or 1 if port is 465
-  `UPDATE smtp_config SET useSSL = (SELECT CASE WHEN port = 465 THEN 1 ELSE 0 END) WHERE id = 1`
+  `UPDATE smtp_config SET useSSL = (SELECT CASE WHEN port = 465 THEN 1 ELSE 0 END) WHERE id = 1`,
+
+  //Modify table and add new column useAuth
+  `ALTER TABLE smtp_config ADD COLUMN useAuth BOOLEAN DEFAULT 0 NOT NULL`,
+
+  //Enable by default the useAuth column
+  `UPDATE smtp_config SET useAuth = 1 WHERE id = 1`
 ];
 
 async function runMigrations() {
