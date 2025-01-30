@@ -16,15 +16,21 @@ app.post('/api/verify-smtp', async (req, res) => {
   const config = req.body;
   
   try {
-    const transporter = nodemailer.createTransport({
+    const transportConfig = {
       host: config.host,
       port: config.port,
-      secure: config.useSSL,
-      auth: {
+      secure: config.useSSL
+    };
+
+    if (config.useAuth !== false) {
+      transportConfig.auth = {
         user: config.username,
         pass: config.password,
-      },
-    });
+      };
+    }
+
+    const transporter = nodemailer.createTransport(transportConfig);
+    
 
     await transporter.verify();
     res.json({ success: true });
@@ -40,16 +46,20 @@ app.post('/api/send-email', async (req, res) => {
   const { contact, subject, content, smtpConfig } = req.body;
 
   try {
-    const transporter = nodemailer.createTransport({
+    const transportConfig = {
       host: smtpConfig.host,
       port: smtpConfig.port,
-      secure: smtpConfig.useSSL,
-      auth: {
+      secure: smtpConfig.useSSL
+    };
+
+    if (smtpConfig.useAuth !== false) {
+      transportConfig.auth = {
         user: smtpConfig.username,
         pass: smtpConfig.password,
-      },
-    });
-
+      };
+    }
+    const transporter = nodemailer.createTransport(transportConfig);
+    
     await transporter.sendMail({
       from: `"${smtpConfig.fromName}" <${smtpConfig.fromEmail}>`,
       to: `"${contact.name}" <${contact.email}>`,
@@ -132,7 +142,8 @@ app.get('/api/settings', async (req, res) => {
       password: '',
       fromEmail: '',
       fromName: '',
-      useSSL: false
+      useSSL: false,
+      useAuth: true
     };
 
     // Construct the response object
@@ -173,6 +184,7 @@ app.get('/api/settings', async (req, res) => {
         fromEmail: smtp.fromEmail,
         fromName: smtp.fromName,
         useSSL: smtp.useSSL,
+        useAuth: smtp.useAuth
       }
     };
 
@@ -201,10 +213,10 @@ app.post('/api/settings', async (req, res) => {
           await pool.query(
             `UPDATE smtp_config
             SET host = ?, port = ?, username = ?, password = ?, 
-                fromEmail = ?, fromName = ?, useSSL = ?
+                fromEmail = ?, fromName = ?, useSSL = ?, useAuth = ?
             WHERE id = 1`,
             [smtpConfig.host, smtpConfig.port, smtpConfig.username, 
-            smtpConfig.password, smtpConfig.fromEmail, smtpConfig.fromName, smtpConfig.useSSL]
+            smtpConfig.password, smtpConfig.fromEmail, smtpConfig.fromName, smtpConfig.useSSL, smtpConfig.useAuth]
           );
         }
         if (action && data) {

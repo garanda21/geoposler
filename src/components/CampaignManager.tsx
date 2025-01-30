@@ -72,8 +72,13 @@ export const CampaignManager: React.FC = () => {
       return;
     }
 
-    if (!smtpConfig.host || !smtpConfig.username || !smtpConfig.password) {
+    if (!smtpConfig.host) {
       toast.error(t('campaigns.messages.configureSmtp'));
+      return;
+    }
+
+    if (smtpConfig.useAuth && (!smtpConfig.username || !smtpConfig.password)) {
+      toast.error('Please provide SMTP authentication details');
       return;
     }
 

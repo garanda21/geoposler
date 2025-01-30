@@ -28,7 +28,18 @@ export const SettingsTab: React.FC = () => {
         [name]: target.checked,
         port: isSSL ? SSL_PORT : NON_SSL_PORT
       }));
-    } else {
+    }
+    else if (name === 'useAuth') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: target.checked,
+        ...(target.checked === false && {
+          username: '',
+          password: ''
+        })
+      }));
+    }
+    else {
       const value = target.type === 'number' ? parseInt(target.value) : target.value;
       setFormData(prev => ({
         ...prev,
@@ -98,31 +109,7 @@ export const SettingsTab: React.FC = () => {
                 <span className="text-sm font-medium text-gray-700">{t('settings.smtp.useSSL')}</span>
               </label>
             </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-            {t('settings.smtp.username')}
-            </label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-            {t('settings.smtp.password')}
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
+          </div>          
           <div>
             <label className="block text-sm font-medium text-gray-700">
             {t('settings.smtp.fromEmail')}
@@ -146,6 +133,50 @@ export const SettingsTab: React.FC = () => {
               onChange={handleInputChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
+          </div>
+          <div className="border rounded-md p-4 bg-gray-50">
+            <div className="mb-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="useAuth"
+                  checked={formData.useAuth}
+                  onChange={handleInputChange}
+                  className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                />
+                <span className="text-sm font-medium text-gray-700">SMTP Authentication</span>
+              </label>
+              <p className="mt-1 text-sm text-gray-500">Enable if your SMTP server requires authentication</p>
+            </div>
+
+            {Boolean(formData.useAuth) && (
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={formData.username || ''}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password || ''}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-4">
