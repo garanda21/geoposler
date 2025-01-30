@@ -137,6 +137,7 @@
       "pauseSuccess": "Campagne mise en pause",
       "cantDelete": "Impossible de supprimer une campagne en cours d'envoi",
       "configureSmtp": "Veuillez configurer les paramètres SMTP d'abord",
+      "smtpAuth": "Veuillez fournir les détails d’authentification SMTP",
       "noContacts": "Aucun contact disponible pour l'envoi",
       "completedWithErrors": "Campagne terminée avec {0} erreurs. {1} e-mails envoyés avec succès.",
       "completedSuccess": "Campagne terminée : {0} e-mails envoyés avec succès"
@@ -162,7 +163,9 @@
       "fromEmail": "E-mail de l'expéditeur",
       "fromName": "Nom de l'expéditeur",
       "saveButton": "Enregistrer les paramètres",
-      "savingButton": "Enregistrement en cours..."
+      "savingButton": "Enregistrement en cours...",
+      "smtpAuth": "Authentification SMTP",
+      "smtpAuthWarning": "Activer si votre serveur SMTP nécessite une authentification"
     },
     "toast": {
       "success": "Paramètres enregistrés avec succès !",

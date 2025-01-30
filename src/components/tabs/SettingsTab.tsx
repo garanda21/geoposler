@@ -144,16 +144,16 @@ export const SettingsTab: React.FC = () => {
                   onChange={handleInputChange}
                   className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 />
-                <span className="text-sm font-medium text-gray-700">SMTP Authentication</span>
+                <span className="text-sm font-medium text-gray-700">{t('settings.smtp.smtpAuth')}</span>
               </label>
-              <p className="mt-1 text-sm text-gray-500">Enable if your SMTP server requires authentication</p>
+              <p className="mt-1 text-sm text-gray-500">{t('settings.smtp.smtpAuthWarning')}</p>
             </div>
 
             {Boolean(formData.useAuth) && (
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Username
+                  {t('settings.smtp.username')}
                   </label>
                   <input
                     type="text"
@@ -165,7 +165,7 @@ export const SettingsTab: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Password
+                  {t('settings.smtp.password')}
                   </label>
                   <input
                     type="password"

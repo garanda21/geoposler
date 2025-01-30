@@ -137,6 +137,7 @@
       "pauseSuccess": "Kampagne pausiert",
       "cantDelete": "Kampagne kann während des Sendens nicht gelöscht werden",
       "configureSmtp": "Bitte konfigurieren Sie zuerst die SMTP-Einstellungen",
+      "smtpAuth": "Bitte geben Sie die SMTP-Authentifizierungsdetails an",
       "noContacts": "Keine Kontakte zum Senden verfügbar",
       "completedWithErrors": "Kampagne mit {0} Fehlern abgeschlossen. {1} E-Mails erfolgreich gesendet.",
       "completedSuccess": "Kampagne abgeschlossen: {0} E-Mails erfolgreich gesendet"
@@ -162,7 +163,9 @@
       "fromEmail": "Absender-E-Mail",
       "fromName": "Absender-Name",
       "saveButton": "Einstellungen speichern",
-      "savingButton": "Wird gespeichert..."
+      "savingButton": "Wird gespeichert...",
+      "smtpAuth": "SMTP-Authentifizierung",
+      "smtpAuthWarning": "Aktivieren, wenn Ihr SMTP-Server eine Authentifizierung erfordert"
     },
     "toast": {
       "success": "Einstellungen erfolgreich gespeichert!",

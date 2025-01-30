@@ -110,7 +110,7 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
         <iframe
           srcDoc={previewContent}
           className="w-full min-h-[400px] border-0"
-          title="Template Preview"
+          title={t('templates.editor.preview')}
         />
       </div>
     </div>

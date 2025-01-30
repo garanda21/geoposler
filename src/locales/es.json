@@ -143,6 +143,7 @@
       "pauseSuccess": "Campaña pausada",
       "cantDelete": "No se puede eliminar una campaña mientras se está enviando",
       "configureSmtp": "Por favor configure los ajustes SMTP primero",
+      "smtpAuth": "Por favor configure los detalles de autenticación SMTP",
       "noContacts": "No hay contactos disponibles para enviar",
       "completedWithErrors": "Campaña completada con {0} errores. {1} emails enviados exitosamente.",
       "completedSuccess": "Campaña completada: {0} emails enviados exitosamente"
@@ -162,7 +163,9 @@
       "fromEmail": "Correo remitente",
       "fromName": "Nombre remitente",
       "saveButton": "Guardar configuración",
-      "savingButton": "Guardando..."
+      "savingButton": "Guardando...",
+      "smtpAuth": "Autenticación SMTP",
+      "smtpAuthWarning": "Habilitar si su servidor SMTP requiere autenticación"
     },
     "toast": {
       "success": "¡Configuración guardada correctamente!",

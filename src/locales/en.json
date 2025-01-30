@@ -137,6 +137,7 @@
       "pauseSuccess": "Campaign paused",
       "cantDelete": "Cannot delete a campaign while it is sending",
       "configureSmtp": "Please configure SMTP settings first",
+      "smtpAuth": "Please provide SMTP authentication details", 
       "noContacts": "No contacts available to send to",
       "completedWithErrors": "Campaign completed with {0} errors. {1} emails sent successfully.",
       "completedSuccess": "Campaign completed: {0} emails sent successfully"
@@ -162,7 +163,9 @@
       "fromEmail": "From Email",
       "fromName": "From Name",
       "saveButton": "Save Settings",
-      "savingButton": "Saving..."
+      "savingButton": "Saving...",
+      "smtpAuth": "SMTP Authentication",
+      "smtpAuthWarning" : "Enable if your SMTP server requires authentication"
     },
     "toast": {
       "success": "Settings saved successfully!",
