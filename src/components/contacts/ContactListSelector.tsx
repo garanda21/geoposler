@@ -1,6 +1,7 @@
 import React from 'react';
 import { ContactList } from '../../types';
 import { PlusCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   contactLists: ContactList[];
@@ -15,16 +16,18 @@ export const ContactListSelector: React.FC<Props> = ({
   onSelect,
   onCreateNew,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Contact Lists</h3>
+        <h3 className="text-lg font-semibold">{t('contacts.list.title')}</h3>
         <button
           onClick={onCreateNew}
           className="flex items-center text-indigo-600 hover:text-indigo-800"
         >
           <PlusCircle className="w-5 h-5 mr-1" />
-          New List
+          {t('contacts.list.newList')}
         </button>
       </div>
       <div className="space-y-2">
@@ -40,7 +43,7 @@ export const ContactListSelector: React.FC<Props> = ({
           >
             <div className="font-medium">{list.name}</div>
             <div className="text-sm text-gray-500">
-              {list.contacts.length} contacts
+              ({list.contacts.length} {t('campaigns.newCampaign.contactCount')})
             </div>
           </button>
         ))}

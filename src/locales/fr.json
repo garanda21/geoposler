@@ -1,0 +1,175 @@
+{
+  "templates": {
+    "title": "Modèles",
+    "emailTemplates": "Modèles d'e-mail",
+    "uploadTemplate": "Télécharger un modèle",
+    "newTemplate": "Nouveau modèle",
+    "selectOrCreate": "Sélectionnez un modèle ou créez-en un nouveau",
+    "messages": {
+      "uploadSuccess": "Modèle téléchargé avec succès",
+      "createSuccess": "Nouveau modèle créé"
+    },
+    "editor": {
+      "templateName": "Nom du modèle",
+      "templateNamePlaceholder": "Entrez le nom du modèle",
+      "visualMode": "Mode visuel",
+      "codeMode": "Mode code",
+      "preview": "Aperçu",
+      "richText": {
+        "bold": "Gras",
+        "italic": "Italique",
+        "bulletList": "Liste à puces",
+        "orderedList": "Liste numérotée",
+        "link": "Insérer un lien",
+        "heading": "Titre",
+        "enterUrl": "Entrez l'URL"
+      }
+    },
+    "list": {
+      "deleteSuccess": "Modèle supprimé avec succès",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce modèle ?"
+    }
+  },
+  "contacts": {
+    "title": "Contacts",
+    "list": {
+      "title": "Listes de contacts",
+      "newList": "Nouvelle liste",
+      "contactCount": "{0} contacts",
+      "columns": {
+        "name": "Nom",
+        "email": "E-mail",
+        "actions": "Actions"
+      },
+      "actions": {
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "addContact": "Ajouter un contact",
+        "deleteList": "Supprimer la liste"
+      },
+      "form": {
+        "listName": "Nom de la liste",
+        "listNamePlaceholder": "Ma liste de contacts",
+        "saveList": "Enregistrer la liste"
+      },
+      "messages": {
+        "selectContactList": "Sélectionnez une liste de contacts ou créez-en une nouvelle",
+        "deleteSuccess": "Liste de contacts supprimée avec succès",
+        "updateSuccess": "Contact mis à jour avec succès",
+        "deleteContactSuccess": "Contact supprimé avec succès",
+        "duplicateEmail": "L'adresse e-mail existe déjà",
+        "duplicatesRemoved": "Les e-mails en double ou existants ont été supprimés",
+        "nameRequired": "Veuillez entrer un nom de liste",
+        "dataRequired": "Veuillez entrer des données de contact ou télécharger un fichier CSV",
+        "listCreated": "Liste de contacts créée avec succès",
+        "contactAdded": "Contact ajouté avec succès"
+      }
+    },
+    "addContact": {
+      "title": "Ajouter un contact",
+      "name": "Nom",
+      "namePlaceholder": "Jean Dupont",
+      "email": "E-mail",
+      "emailPlaceholder": "jean@exemple.com",
+      "importTitle": "Ou importer plusieurs contacts",
+      "validation": {
+        "nameEmail": "Le nom et l'e-mail sont obligatoires",
+        "validEmail": "Veuillez entrer une adresse e-mail valide"
+      },
+      "uploadCSV": "Télécharger un fichier CSV",
+      "csvFormat": "Format : nom;e-mail (un par ligne)",
+      "previewCSV": "Aperçu du contenu CSV"
+    },
+    "uploader": {
+      "button": "Télécharger un fichier CSV",
+      "format": "Format : nom;e-mail (un par ligne)",
+      "preview": "Aperçu du contenu CSV",
+      "messages": {
+        "success": "Fichier CSV chargé avec succès",
+        "error": "Erreur lors de la lecture du fichier CSV",
+        "importSuccess": "Contacts importés avec succès"
+      }
+    }
+  },
+  "campaigns": {
+    "title": "Campagnes",
+    "newCampaign": {
+      "title": "Créer une nouvelle campagne",
+      "name": "Nom de la campagne",
+      "subject": "Sujet",
+      "template": "Modèle",
+      "contactList": "Liste de contacts",
+      "selectTemplate": "Sélectionner un modèle",
+      "selectContactList": "Sélectionner une liste de contacts",
+      "contactCount": "contacts",
+      "createButton": "Créer la campagne"
+    },
+    "table": {
+      "campaign": "Campagne",
+      "date": "Date",
+      "template": "Modèle",
+      "contactList": "Liste de contacts",
+      "status": "Statut",
+      "progress": "Progression",
+      "actions": "Actions"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "sending": "Envoi en cours",
+      "completed": "Terminée",
+      "completedwitherrors": "Terminée avec des erreurs",
+      "failed": "Échec"
+    },
+    "actions": {
+      "start": "Démarrer la campagne",
+      "pause": "Mettre en pause",
+      "retry": "Réessayer",
+      "delete": "Supprimer la campagne",
+      "viewErrors": "Voir les erreurs"
+    },
+    "messages": {
+      "fillFields": "Veuillez remplir tous les champs",
+      "notFound": "Le modèle ou la liste de contacts sélectionné(e) est introuvable",
+      "createSuccess": "Campagne créée avec succès",
+      "deleteSuccess": "Campagne supprimée avec succès",
+      "pauseSuccess": "Campagne mise en pause",
+      "cantDelete": "Impossible de supprimer une campagne en cours d'envoi",
+      "configureSmtp": "Veuillez configurer les paramètres SMTP d'abord",
+      "smtpAuth": "Veuillez fournir les détails d’authentification SMTP",
+      "noContacts": "Aucun contact disponible pour l'envoi",
+      "completedWithErrors": "Campagne terminée avec {0} erreurs. {1} e-mails envoyés avec succès.",
+      "completedSuccess": "Campagne terminée : {0} e-mails envoyés avec succès"
+    },
+    "errors": {
+      "title": "Erreurs de campagne",
+      "close": "Fermer",
+      "emailColumn": "E-mail",
+      "errorColumn": "Erreur"
+    }
+  },
+  "settings": {      
+    "title": "Paramètres",  
+    "smtp": {
+      "title": "Paramètres SMTP",
+      "host": "Hôte SMTP",
+      "port": "Port",
+      "useSSL": "Utiliser SSL",
+      "sslPortMessage": "Utilisation du port SSL (465)",
+      "tlsPortMessage": "Utilisation du port TLS/STARTTLS (587)",
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "fromEmail": "E-mail de l'expéditeur",
+      "fromName": "Nom de l'expéditeur",
+      "saveButton": "Enregistrer les paramètres",
+      "savingButton": "Enregistrement en cours...",
+      "smtpAuth": "Authentification SMTP",
+      "smtpAuthWarning": "Activer si votre serveur SMTP nécessite une authentification"
+    },
+    "toast": {
+      "success": "Paramètres enregistrés avec succès !",
+      "error": "Échec de l'enregistrement des paramètres"
+    }
+  }
+}

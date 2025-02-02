@@ -1,0 +1,175 @@
+{
+  "templates": {
+    "title": "Templates",
+    "emailTemplates": "Email Templates",
+    "uploadTemplate": "Upload Template",
+    "newTemplate": "New Template",
+    "selectOrCreate": "Select a template or create a new one",
+    "messages": {
+      "uploadSuccess": "Template uploaded successfully",
+      "createSuccess": "New template created"
+    },
+    "editor": {
+      "templateName": "Template Name",
+      "templateNamePlaceholder": "Enter template name",
+      "visualMode": "Visual Mode",
+      "codeMode": "Code Mode",
+      "preview": "Preview",
+      "richText": {
+        "bold": "Bold",
+        "italic": "Italic",
+        "bulletList": "Bullet List",
+        "orderedList": "Numbered List",
+        "link": "Insert Link",
+        "heading": "Heading",
+        "enterUrl": "Enter URL"
+      }
+    },
+    "list": {
+      "deleteSuccess": "Template deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this template?"
+    }
+  },
+  "contacts": {
+    "title": "Contacts",
+    "list": {
+      "title": "Contact Lists",
+      "newList": "New List",
+      "contactCount": "{0} contacts",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "actions": "Actions"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "cancel": "Cancel",
+        "addContact": "Add Contact",
+        "deleteList": "Delete List"
+      },
+      "form": {
+        "listName": "List Name",
+        "listNamePlaceholder": "My Contact List",
+        "saveList": "Save List"
+      },
+      "messages": {
+        "selectContactList": "Select a contact list or create a new one",
+        "deleteSuccess": "Contact list deleted successfully",
+        "updateSuccess": "Contact updated successfully",
+        "deleteContactSuccess": "Contact deleted successfully",
+        "duplicateEmail": "Email address already exists",
+        "duplicatesRemoved": "Duplicate or existing email addresses were removed",
+        "nameRequired": "Please enter a list name",
+        "dataRequired": "Please enter contact data or upload a CSV file",
+        "listCreated": "Contact list created successfully",
+        "contactAdded": "Contact added successfully"
+      }
+    },
+    "addContact": {
+      "title": "Add Contact",
+      "name": "Name",
+      "namePlaceholder": "John Doe",
+      "email": "Email",
+      "emailPlaceholder": "john@example.com",
+      "importTitle": "Or import multiple contacts",
+      "validation": {
+        "nameEmail": "Name and email are required",
+        "validEmail": "Please enter a valid email address"
+      },
+      "uploadCSV": "Upload CSV File",
+      "csvFormat": "Format: name;email (one per line)",
+      "previewCSV": "Preview CSV Content"
+    },
+    "uploader": {
+      "button": "Upload CSV File",
+      "format": "Format: name;email (one per line)",
+      "preview": "Preview CSV Content",
+      "messages": {
+        "success": "CSV file loaded successfully",
+        "error": "Error reading CSV file",
+        "importSuccess": "Contacts imported successfully"
+      }
+    }
+  },
+  "campaigns": {
+    "title": "Campaigns",
+    "newCampaign": {
+      "title": "Create New Campaign",
+      "name": "Campaign Name",
+      "subject": "Subject",
+      "template": "Template",
+      "contactList": "Contact List",
+      "selectTemplate": "Select a template",
+      "selectContactList": "Select a contact list",
+      "contactCount": "contacts",
+      "createButton": "Create Campaign"
+    },
+    "table": {
+      "campaign": "Campaign",
+      "date": "Date",
+      "template": "Template",
+      "contactList": "Contact List",
+      "status": "Status",
+      "progress": "Progress",
+      "actions": "Actions"
+    },
+    "status": {
+      "draft": "Draft",
+      "sending": "Sending",
+      "completed": "Completed",
+      "completedwitherrors": "Completed with errors",
+      "failed": "Failed"
+    },
+    "actions": {
+      "start": "Start Campaign",
+      "pause": "Pause Campaign",
+      "retry": "Retry Campaign",
+      "delete": "Delete Campaign",
+      "viewErrors": "View Errors"
+    },
+    "messages": {
+      "fillFields": "Please fill in all fields",
+      "notFound": "Selected template or contact list not found",
+      "createSuccess": "Campaign created successfully",
+      "deleteSuccess": "Campaign deleted successfully",
+      "pauseSuccess": "Campaign paused",
+      "cantDelete": "Cannot delete a campaign while it is sending",
+      "configureSmtp": "Please configure SMTP settings first",
+      "smtpAuth": "Please provide SMTP authentication details", 
+      "noContacts": "No contacts available to send to",
+      "completedWithErrors": "Campaign completed with {0} errors. {1} emails sent successfully.",
+      "completedSuccess": "Campaign completed: {0} emails sent successfully"
+    },
+    "errors": {
+      "title": "Campaign Errors",
+      "close": "Close",
+      "emailColumn": "Email",
+      "errorColumn": "Error"
+    }
+  },
+  "settings": {      
+    "title": "Settings",  
+    "smtp": {
+      "title": "SMTP Settings",
+      "host": "SMTP Host",
+      "port": "Port",
+      "useSSL": "Use SSL",
+      "sslPortMessage": "Using SSL port (465)",
+      "tlsPortMessage": "Using TLS/STARTTLS port (587)",
+      "username": "Username",
+      "password": "Password",
+      "fromEmail": "From Email",
+      "fromName": "From Name",
+      "saveButton": "Save Settings",
+      "savingButton": "Saving...",
+      "smtpAuth": "SMTP Authentication",
+      "smtpAuthWarning" : "Enable if your SMTP server requires authentication"
+    },
+    "toast": {
+      "success": "Settings saved successfully!",
+      "error": "Failed to save settings"
+    }
+  }
+}

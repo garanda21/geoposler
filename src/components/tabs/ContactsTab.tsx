@@ -5,11 +5,13 @@ import { ContactListForm } from '../contacts/ContactListForm';
 import { ContactListDetails } from '../contacts/ContactListDetails';
 import { EmailContact } from '../../types';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 export const ContactsTab: React.FC = () => {
   const { contactLists, addContactList, updateContactList, deleteContactList } = useStore();
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const { t } = useTranslation();
 
   const handleCreateList = (name: string, contacts: EmailContact[]) => {
     const newList = {
@@ -20,7 +22,6 @@ export const ContactsTab: React.FC = () => {
     addContactList(newList);
     setSelectedListId(newList.id);
     setIsCreating(false);
-    //toast.success('Contact list created successfully');
   };
 
   const handleUpdateContacts = (contacts: EmailContact[]) => {
@@ -33,7 +34,7 @@ export const ContactsTab: React.FC = () => {
     if (selectedListId) {
       deleteContactList(selectedListId);
       setSelectedListId(null);
-      toast.success('Contact list deleted successfully');
+      toast.success(t('contacts.list.messages.deleteSuccess'));
     }
   };
 
@@ -41,7 +42,7 @@ export const ContactsTab: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Contact Lists</h2>
+      <h2 className="text-2xl font-bold">{t('contacts.list.title')}</h2>
       <div className="grid grid-cols-4 gap-6">
         <div className="col-span-1">
           <ContactListSelector
@@ -65,7 +66,7 @@ export const ContactsTab: React.FC = () => {
             />
           ) : (
             <div className="text-center text-gray-500 mt-8">
-              Select a contact list or create a new one
+              {t('contacts.list.messages.selectContactList')}
             </div>
           )}
         </div>

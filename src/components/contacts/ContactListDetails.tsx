@@ -3,6 +3,7 @@ import { ContactList, EmailContact } from '../../types';
 import { Pencil, Trash2, Save, X, UserPlus } from 'lucide-react';
 import { AddContactForm } from './AddContactForm';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   contactList: ContactList;
@@ -15,6 +16,7 @@ export const ContactListDetails: React.FC<Props> = ({
   onUpdate,
   onDelete,
 }) => {
+  const { t } = useTranslation();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<EmailContact>({ id: '', name: '', email: '' });
   const [isAddingContact, setIsAddingContact] = useState(false);
@@ -26,12 +28,12 @@ export const ContactListDetails: React.FC<Props> = ({
 
   const handleSave = () => {
     if (!editForm.name || !editForm.email) {
-      toast.error('Name and email are required');
+      toast.error(t('contacts.addContact.validation.nameEmail'));
       return;
     }
 
     if (!editForm.email.includes('@')) {
-      toast.error('Please enter a valid email address');
+      toast.error(t('contacts.addContact.validation.validEmail'));
       return;
     }
 
@@ -40,20 +42,20 @@ export const ContactListDetails: React.FC<Props> = ({
     );
     onUpdate(updatedContacts);
     setEditingId(null);
-    toast.success('Contact updated successfully');
+    toast.success(t('contacts.list.messages.updateSuccess'));
   };
 
   const handleDelete = (id: string) => {
     const updatedContacts = contactList.contacts.filter((c) => c.id !== id);
     onUpdate(updatedContacts);
-    toast.success('Contact deleted successfully');
+    toast.success(t('contacts.list.messages.deleteContactSuccess'));
   };
 
   const handleAddContacts = (newContacts: EmailContact[]) => {
     if (newContacts.length === 1 && contactList.contacts.some(existing => 
       existing.email.toLowerCase() === newContacts[0].email.toLowerCase()
     )) {
-      toast.error('Email address already exists', {duration: 5000});
+      toast.error(t('contacts.list.messages.duplicateEmail'), {duration: 5000});
       return;
     }
     else
@@ -77,7 +79,9 @@ export const ContactListDetails: React.FC<Props> = ({
     const updatedContacts = [...contactList.contacts, ...newContacts];
     onUpdate(updatedContacts);
     setIsAddingContact(false);
-    //toast.success('Contact added successfully');
+    if (newContacts.length === 1) {
+      toast.success(t('contacts.list.messages.contactAdded'));
+    }
   };
 
   return (
@@ -89,7 +93,7 @@ export const ContactListDetails: React.FC<Props> = ({
           className="flex items-center text-indigo-600 hover:text-indigo-800"
         >
           <UserPlus className="w-5 h-5 mr-1" />
-          Add Contact
+          {t('contacts.list.actions.addContact')}
         </button>
       </div>
 
@@ -105,13 +109,13 @@ export const ContactListDetails: React.FC<Props> = ({
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Name
+                {t('contacts.list.columns.name')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Email
+                {t('contacts.list.columns.email')}
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                Actions
+                {t('contacts.list.columns.actions')}
               </th>
             </tr>
           </thead>
@@ -148,14 +152,14 @@ export const ContactListDetails: React.FC<Props> = ({
                       <button
                         onClick={handleSave}
                         className="text-green-600 hover:text-green-900"
-                        title="Save"
+                        title={t('contacts.list.actions.save')}
                       >
                         <Save className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => setEditingId(null)}
                         className="text-gray-600 hover:text-gray-900"
-                        title="Cancel"
+                        title={t('contacts.list.actions.cancel')}
                       >
                         <X className="h-5 w-5" />
                       </button>
@@ -165,14 +169,14 @@ export const ContactListDetails: React.FC<Props> = ({
                       <button
                         onClick={() => handleEdit(contact)}
                         className="text-indigo-600 hover:text-indigo-900"
-                        title="Edit"
+                        title={t('contacts.list.actions.edit')}
                       >
                         <Pencil className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => handleDelete(contact.id)}
                         className="text-red-600 hover:text-red-900"
-                        title="Delete"
+                        title={t('contacts.list.actions.delete')}
                       >
                         <Trash2 className="h-5 w-5" />
                       </button>
@@ -189,7 +193,7 @@ export const ContactListDetails: React.FC<Props> = ({
           onClick={onDelete}
           className="px-4 py-2 text-red-600 hover:text-red-800"
         >
-          Delete List
+          {t('contacts.list.actions.deleteList')}
         </button>
       </div>
     </div>
