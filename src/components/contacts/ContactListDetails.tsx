@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ContactList, EmailContact } from '../../types';
-import { Pencil, Trash2, Save, X, UserPlus } from 'lucide-react';
+import { Pencil, Trash2, Save, X, UserPlus, Download } from 'lucide-react';
 import { AddContactForm } from './AddContactForm';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -83,18 +83,60 @@ export const ContactListDetails: React.FC<Props> = ({
       toast.success(t('contacts.list.messages.contactAdded'));
     }
   };
+  
+  const handleExportCSV = () => {
+    try {
+      // Generar contenido CSV a partir de la lista de contactos
+      const csvContent = contactList.contacts
+        .map(contact => `${contact.name};${contact.email}`)
+        .join('\n');
+      
+      // Crear un blob con el contenido CSV
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      
+      // Crear un objeto URL para el blob
+      const url = URL.createObjectURL(blob);
+      
+      // Crear un enlace temporal para la descarga
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${contactList.name}.csv`);
+      document.body.appendChild(link);
+      
+      // Simular clic en el enlace para iniciar la descarga
+      link.click();
+      
+      // Limpiar después de la descarga
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success(t('contacts.list.messages.exportSuccess') || 'Lista de contactos exportada con éxito');
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">{contactList.name}</h3>
-        <button
-          onClick={() => setIsAddingContact(true)}
-          className="flex items-center text-indigo-600 hover:text-indigo-800"
-        >
-          <UserPlus className="w-5 h-5 mr-1" />
-          {t('contacts.list.actions.addContact')}
-        </button>
+        <div className="flex space-x-2">
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center text-indigo-600 hover:text-indigo-800"
+            title={t('contacts.list.actions.exportCSV') || 'Exportar a CSV'}
+          >
+            <Download className="w-5 h-5 mr-1" />
+            {t('contacts.list.actions.exportCSV') || 'Exportar CSV'}
+          </button>
+          <button
+            onClick={() => setIsAddingContact(true)}
+            className="flex items-center text-indigo-600 hover:text-indigo-800"
+          >
+            <UserPlus className="w-5 h-5 mr-1" />
+            {t('contacts.list.actions.addContact')}
+          </button>
+        </div>
       </div>
 
       {isAddingContact && (

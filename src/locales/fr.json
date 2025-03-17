@@ -47,7 +47,8 @@
         "save": "Enregistrer",
         "cancel": "Annuler",
         "addContact": "Ajouter un contact",
-        "deleteList": "Supprimer la liste"
+        "deleteList": "Supprimer la liste",
+        "exportCSV": "Exporter CSV"
       },
       "form": {
         "listName": "Nom de la liste",
@@ -64,7 +65,8 @@
         "nameRequired": "Veuillez entrer un nom de liste",
         "dataRequired": "Veuillez entrer des données de contact ou télécharger un fichier CSV",
         "listCreated": "Liste de contacts créée avec succès",
-        "contactAdded": "Contact ajouté avec succès"
+        "contactAdded": "Contact ajouté avec succès",
+        "exportSuccess": "Liste de contacts exportée avec succès"
       }
     },
     "addContact": {
