@@ -248,11 +248,11 @@ export const CampaignManager: React.FC = () => {
 
             return (
               <tr key={campaign.id}>
-                <td className="px-6 py-4 whitespace-wrap">
+                <td className="px-6 py-4 whitespace-normal break-words">
                   <div className="text-sm font-medium text-gray-900">{campaign.name}</div>
                   <div className="text-sm text-gray-500">{campaign.subject}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-normal break-words">
                   <div className="text-sm font-medium text-gray-900">
                     {parsedDate && parsedDate?.getTime() > 0 ? format(parsedDate, 'dd/MM/yyyy') : '-'}
                   </div>
@@ -260,13 +260,13 @@ export const CampaignManager: React.FC = () => {
                     {parsedDate && parsedDate?.getTime() > 0 ? format(parsedDate, 'HH:mm:ss') : '-'}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-normal break-words text-sm text-gray-500">
                   {campaign.templateName}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-normal break-words text-sm text-gray-500">
                   {campaign.contactListName}
                 </td>
-                <td className="px-6 py-4 whitespace-wrap">
+                <td className="px-6 py-4 whitespace-normal break-words">
                   <span
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       campaign.status === 'completed'
