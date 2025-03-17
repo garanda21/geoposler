@@ -104,7 +104,9 @@
       "selectTemplate": "Sélectionner un modèle",
       "selectContactList": "Sélectionner une liste de contacts",
       "contactCount": "contacts",
-      "createButton": "Créer la campagne"
+      "createButton": "Créer la campagne",
+      "totalContacts": "Total des contacts sélectionnés",
+      "listsSelected": "liste(s) de contacts sélectionnée(s)"
     },
     "table": {
       "campaign": "Campagne",
