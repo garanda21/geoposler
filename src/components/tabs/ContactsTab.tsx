@@ -43,8 +43,9 @@ export const ContactsTab: React.FC = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">{t('contacts.list.title')}</h2>
-      <div className="grid grid-cols-4 gap-6">
-        <div className="col-span-1">
+      <div className="flex gap-6">
+        {/* Left side with scrollable contact lists */}
+        <div className="w-1/4 max-h-[calc(100vh-200px)] overflow-y-auto">
           <ContactListSelector
             contactLists={contactLists}
             selectedListId={selectedListId}
@@ -52,7 +53,9 @@ export const ContactsTab: React.FC = () => {
             onCreateNew={() => setIsCreating(true)}
           />
         </div>
-        <div className="col-span-3">
+        
+        {/* Right side with fixed position content */}
+        <div className="w-3/4 sticky top-0">
           {isCreating ? (
             <ContactListForm
               onSave={handleCreateList}

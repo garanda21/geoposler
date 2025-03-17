@@ -36,7 +36,7 @@ export const TemplatesTab: React.FC = () => {
     const newTemplate = {
       id,
       name: 'New Template',
-      content: '<h1>Hello {{name}}!</h1>',
+      content: '',
     };
     addTemplate(newTemplate);
     setSelectedTemplateId(id);

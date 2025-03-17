@@ -300,10 +300,12 @@ app.post('/api/settings', async (req, res) => {
               if (data.contacts) {
                 // Delete contacts that are no longer in the list
                 const newEmailList = data.contacts.map(c => c.email);
-                await pool.query(
-                  'DELETE FROM contacts WHERE contact_list_id = ? AND email NOT IN (?)',
-                  [data.id, newEmailList]
-                );
+                if (newEmailList.length > 0) {
+                  await pool.query(
+                    'DELETE FROM contacts WHERE contact_list_id = ? AND email NOT IN (?)',
+                    [data.id, newEmailList]
+                  );
+                }                                  
     
                 // Insert only new contacts that don't exist
                 if (data.contacts.length > 0) {

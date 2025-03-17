@@ -139,6 +139,7 @@
       "pauseSuccess": "Campagne mise en pause",
       "cantDelete": "Impossible de supprimer une campagne en cours d'envoi",
       "configureSmtp": "Veuillez configurer les paramètres SMTP d'abord",
+      "emptyTemplate": "Le modèle sélectionné n'a pas de contenu. Veuillez d'abord modifier le modèle.",
       "smtpAuth": "Veuillez fournir les détails d’authentification SMTP",
       "noContacts": "Aucun contact disponible pour l'envoi",
       "completedWithErrors": "Campagne terminée avec {0} erreurs. {1} e-mails envoyés avec succès.",

@@ -145,6 +145,7 @@
       "pauseSuccess": "Campaña pausada",
       "cantDelete": "No se puede eliminar una campaña mientras se está enviando",
       "configureSmtp": "Por favor configure los ajustes SMTP primero",
+      "emptyTemplate": "La plantilla seleccionada no tiene contenido. Por favor edite la plantilla primero.",
       "smtpAuth": "Por favor configure los detalles de autenticación SMTP",
       "noContacts": "No hay contactos disponibles para enviar",
       "completedWithErrors": "Campaña completada con {0} errores. {1} emails enviados exitosamente.",

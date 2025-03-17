@@ -134,6 +134,7 @@
     "messages": {
       "fillFields": "Please fill in all fields",
       "notFound": "Selected template or contact list not found",
+      "emptyTemplate": "The selected template has no content. Please edit the template first.",
       "createSuccess": "Campaign created successfully",
       "deleteSuccess": "Campaign deleted successfully",
       "pauseSuccess": "Campaign paused",

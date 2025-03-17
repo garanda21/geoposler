@@ -85,8 +85,14 @@ export const CampaignManager: React.FC = () => {
     const template = templates.find(t => t.id === campaign?.templateId);
     const selectedContactLists = contactLists.filter(cl => campaign?.contactListIds.includes(cl.id));
     
-    if (!campaign || !template || selectedContactLists.length === 0) {
+    if (!campaign || !template) {
       toast.error(t('campaigns.messages.notFound'));
+      return;
+    }
+
+    // Validate that the template content is not empty
+    if (!template.content || template.content.trim() === '') {
+      toast.error(t('campaigns.messages.emptyTemplate'));
       return;
     }
 
