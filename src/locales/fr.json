@@ -7,7 +7,8 @@
     "selectOrCreate": "Sélectionnez un modèle ou créez-en un nouveau",
     "messages": {
       "uploadSuccess": "Modèle téléchargé avec succès",
-      "createSuccess": "Nouveau modèle créé"
+      "createSuccess": "Nouveau modèle créé",
+      "failedSave": "Échec de l'enregistrement du modèle, veuillez vérifier les journaux"
     },
     "editor": {
       "templateName": "Nom du modèle",

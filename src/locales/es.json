@@ -7,7 +7,8 @@
     "selectOrCreate": "Seleccione una plantilla o cree una nueva",
     "messages": {
       "uploadSuccess": "Plantilla subida exitosamente",
-      "createSuccess": "Nueva plantilla creada"
+      "createSuccess": "Nueva plantilla creada",
+      "failedSave": "Error al guardar la plantilla, por favor revise los registros"
     },
     "editor": {
       "templateName": "Nombre de la Plantilla",

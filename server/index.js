@@ -7,7 +7,7 @@ import { initializeDatabase } from './database/migrate.js';
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));  // Increased payload limit
 
 // Run migrations when server starts
 await initializeDatabase().catch(console.error);

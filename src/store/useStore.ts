@@ -73,15 +73,19 @@ export const useStore = create<Store>()(
         });
     },
       updateTemplate: async (id, template) => {
-        set((state) => ({
-          templates: state.templates.map((t) =>
-            t.id === id ? { ...t, ...template } : t
-          ),
-        }));
-        await get().saveSettings({
-          type: 'UPDATE_TEMPLATE',
-          data: { id, ...template }
-        });
+        try {
+          set((state) => ({
+            templates: state.templates.map((t) =>
+              t.id === id ? { ...t, ...template } : t
+            ),
+          }));
+          await get().saveSettings({
+            type: 'UPDATE_TEMPLATE',
+            data: { id, ...template }
+          });
+        } catch (error) {                    
+          throw error; // Re-throw to be caught by the component
+        }
       },
       deleteTemplate: async (id) => {
         set((state) => ({
@@ -172,9 +176,9 @@ export const useStore = create<Store>()(
             data: action?.data
           });
         } catch (error) {
-          set({ error: 'Failed to save settings' });          
+          set({ error: error instanceof Error ? error.message : 'Failed to save settings' });          
           console.error('Failed to save settings:', error);
-          throw error; // Re-throw to handle in component
+          throw error; // Make sure to re-throw for the component to catch
         } finally {
           set({ isLoading: false });
         }

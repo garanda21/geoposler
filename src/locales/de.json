@@ -7,7 +7,8 @@
     "selectOrCreate": "Wählen Sie eine Vorlage aus oder erstellen Sie eine neue",
     "messages": {
       "uploadSuccess": "Vorlage erfolgreich hochgeladen",
-      "createSuccess": "Neue Vorlage erstellt"
+      "createSuccess": "Neue Vorlage erstellt",
+      "failedSave": "Fehler beim Speichern der Vorlage, bitte überprüfen Sie die Protokolle"
     },
     "editor": {
       "templateName": "Vorlagenname",
