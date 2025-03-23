@@ -336,138 +336,142 @@ export const CampaignManager: React.FC = () => {
 
       {/* Campaign table section */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('campaigns.table.campaign')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('campaigns.table.date')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('campaigns.table.template')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('campaigns.table.contactList')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('campaigns.table.status')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('campaigns.table.progress')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('campaigns.table.actions')}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-          {campaigns.map((campaign) => {
-            const parsedDate = campaign.createDate
-              ? parse(campaign.createDate, 'dd/MM/yyyy HH:mm:ss', new Date())
-              : null;
-            
-            // Handle displaying multiple contact list names - fixed to handle legacy data
-            const contactListsDisplay = Array.isArray(campaign.contactListNames) 
-              ? campaign.contactListNames.join(', ') 
-              : (campaign as any).contactListName || ''; // Safe cast for backward compatibility
-
-            return (
-              <tr key={campaign.id}>
-                <td className="px-6 py-4 whitespace-wrap">
-                  <div className="text-sm font-medium text-gray-900">{campaign.name}</div>
-                  <div className="text-sm text-gray-500">{campaign.subject}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
-                    {parsedDate && parsedDate?.getTime() > 0 ? format(parsedDate, 'dd/MM/yyyy') : '-'}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {parsedDate && parsedDate?.getTime() > 0 ? format(parsedDate, 'HH:mm:ss') : '-'}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {campaign.templateName}
-                </td>
-                <td className="px-6 py-4 whitespace-wrap text-sm text-gray-500">
-                  {contactListsDisplay}
-                </td>
-                <td className="px-6 py-4 whitespace-wrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      campaign.status === 'completed'
-                        ? 'bg-green-100 text-green-800'
-                        : campaign.status === 'sending'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : campaign.status === 'completed with errors'
-                        ? 'bg-orange-100 text-orange-800'
-                        : campaign.status === 'failed'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {t(`campaigns.status.${campaign.status.replace(/\s+/g, '')}`)}
-                  </span>
-                  {campaign.error && (
-                    <button
-                      onClick={() => setShowErrors(campaign.id)}
-                      className="ml-2 text-gray-500 hover:text-gray-700"
-                      title={t('campaigns.actions.viewErrors')}
-                    >
-                      <Info className="w-4 h-4" />
-                    </button>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {campaign.sentCount} / {campaign.totalCount}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-2">
-                  {campaign.status === 'draft' && (
-                    <button
-                      onClick={() => handleStartCampaign(campaign.id)}
-                      className="text-indigo-600 hover:text-indigo-900"
-                      title={t('campaigns.actions.start')}
-                    >
-                      <Play className="h-5 w-5" />
-                    </button>
-                  )}
-                  {campaign.status === 'sending' && (
-                    <button
-                      onClick={() => handlePauseCampaign(campaign.id)}
-                      className="text-yellow-600 hover:text-yellow-900"
-                      title={t('campaigns.actions.pause')}
-                    >
-                      <Pause className="h-5 w-5" />
-                    </button>
-                  )}
-                  {campaign.status === 'completed' && (
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                  )}
-                  {campaign.status === 'failed' && (
-                    <button
-                      onClick={() => handleStartCampaign(campaign.id)}
-                      className="text-indigo-600 hover:text-indigo-900"
-                      title={t('campaigns.actions.retry')}
-                    >
-                      <RotateCw className="h-5 w-5 text-red-600" />
-                    </button>
-                  )}
-                  {campaign.status !== 'sending' && (
-                    <button
-                      onClick={() => handleDeleteCampaign(campaign.id)}
-                      className="text-red-600 hover:text-red-900 ml-2"
-                      title={t('campaigns.actions.delete')}
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {t('campaigns.table.campaign')}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                  {t('campaigns.table.date')}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                  {t('campaigns.table.template')}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                  {t('campaigns.table.contactList')}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {t('campaigns.table.status')}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                  {t('campaigns.table.progress')}
+                </th>
+                {/* Actions column is always visible */}
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky right-0 bg-gray-50">
+                  {t('campaigns.table.actions')}
+                </th>
               </tr>
-            );
-          })}
-        </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+            {campaigns.map((campaign) => {
+              const parsedDate = campaign.createDate
+                ? parse(campaign.createDate, 'dd/MM/yyyy HH:mm:ss', new Date())
+                : null;
+              
+              // Handle displaying multiple contact list names - fixed to handle legacy data
+              const contactListsDisplay = Array.isArray(campaign.contactListNames) 
+                ? campaign.contactListNames.join(', ') 
+                : (campaign as any).contactListName || ''; // Safe cast for backward compatibility
+
+              return (
+                <tr key={campaign.id}>
+                  <td className="px-4 py-4 whitespace-wrap">
+                    <div className="text-sm font-medium text-gray-900">{campaign.name}</div>
+                    <div className="text-sm text-gray-500">{campaign.subject}</div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
+                    <div className="text-sm font-medium text-gray-900">
+                      {parsedDate && parsedDate?.getTime() > 0 ? format(parsedDate, 'dd/MM/yyyy') : '-'}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {parsedDate && parsedDate?.getTime() > 0 ? format(parsedDate, 'HH:mm:ss') : '-'}
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                    {campaign.templateName}
+                  </td>
+                  <td className="px-4 py-4 whitespace-wrap text-sm text-gray-500 hidden lg:table-cell">
+                    {contactListsDisplay}
+                  </td>
+                  <td className="px-4 py-4 whitespace-wrap">
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        campaign.status === 'completed'
+                          ? 'bg-green-100 text-green-800'
+                          : campaign.status === 'sending'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : campaign.status === 'completed with errors'
+                          ? 'bg-orange-100 text-orange-800'
+                          : campaign.status === 'failed'
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {t(`campaigns.status.${campaign.status.replace(/\s+/g, '')}`)}
+                    </span>
+                    {campaign.error && (
+                      <button
+                        onClick={() => setShowErrors(campaign.id)}
+                        className="ml-2 text-gray-500 hover:text-gray-700"
+                        title={t('campaigns.actions.viewErrors')}
+                      >
+                        <Info className="w-4 h-4" />
+                      </button>
+                    )}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
+                    {campaign.sentCount} / {campaign.totalCount}
+                  </td>
+                  {/* Actions column is always visible and styled to appear on top of other content when scrolling horizontally */}
+                  <td className="px-4 py-4 whitespace-nowrap text-sm font-medium sticky right-0 bg-white shadow-l flex items-center space-x-2">
+                    {campaign.status === 'draft' && (
+                      <button
+                        onClick={() => handleStartCampaign(campaign.id)}
+                        className="text-indigo-600 hover:text-indigo-900"
+                        title={t('campaigns.actions.start')}
+                      >
+                        <Play className="h-5 w-5" />
+                      </button>
+                    )}
+                    {campaign.status === 'sending' && (
+                      <button
+                        onClick={() => handlePauseCampaign(campaign.id)}
+                        className="text-yellow-600 hover:text-yellow-900"
+                        title={t('campaigns.actions.pause')}
+                      >
+                        <Pause className="h-5 w-5" />
+                      </button>
+                    )}
+                    {campaign.status === 'completed' && (
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                    )}
+                    {campaign.status === 'failed' && (
+                      <button
+                        onClick={() => handleStartCampaign(campaign.id)}
+                        className="text-indigo-600 hover:text-indigo-900"
+                        title={t('campaigns.actions.retry')}
+                      >
+                        <RotateCw className="h-5 w-5 text-red-600" />
+                      </button>
+                    )}
+                    {campaign.status !== 'sending' && (
+                      <button
+                        onClick={() => handleDeleteCampaign(campaign.id)}
+                        className="text-red-600 hover:text-red-900 ml-2"
+                        title={t('campaigns.actions.delete')}
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+          </table>
+        </div>
       </div>
 
       {showErrors && (
