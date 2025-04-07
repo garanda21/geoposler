@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore';
 import { RichTextEditor } from './editor/RichTextEditor';
 import { Code, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 
 interface Props {
   templateId: string;
@@ -26,14 +27,22 @@ export const TemplateEditor: React.FC<Props> = ({ templateId }) => {
 
   if (!template) return null;
 
-  const handleNameChange = (newName: string) => {
-    setName(newName);
-    updateTemplate(templateId, { name: newName });
+  const handleNameChange = async (newName: string) => {
+    try {
+      setName(newName);
+      await updateTemplate(templateId, { name: newName });
+    } catch (error) {
+      toast.error(t('templates.messages.failedSave'));
+    }
   };
 
-  const handleContentChange = (newContent: string) => {
-    setContent(newContent);
-    updateTemplate(templateId, { content: newContent });
+  const handleContentChange = async (newContent: string) => {
+    try {
+      setContent(newContent);
+      await updateTemplate(templateId, { content: newContent });
+    } catch (error) {
+      toast.error(t('templates.messages.failedSave'));
+    }
   };
 
   const previewContent = `

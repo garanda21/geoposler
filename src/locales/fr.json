@@ -7,7 +7,8 @@
     "selectOrCreate": "Sélectionnez un modèle ou créez-en un nouveau",
     "messages": {
       "uploadSuccess": "Modèle téléchargé avec succès",
-      "createSuccess": "Nouveau modèle créé"
+      "createSuccess": "Nouveau modèle créé",
+      "failedSave": "Échec de l'enregistrement du modèle, veuillez vérifier les journaux"
     },
     "editor": {
       "templateName": "Nom du modèle",
@@ -47,7 +48,8 @@
         "save": "Enregistrer",
         "cancel": "Annuler",
         "addContact": "Ajouter un contact",
-        "deleteList": "Supprimer la liste"
+        "deleteList": "Supprimer la liste",
+        "exportCSV": "Exporter CSV"
       },
       "form": {
         "listName": "Nom de la liste",
@@ -64,7 +66,8 @@
         "nameRequired": "Veuillez entrer un nom de liste",
         "dataRequired": "Veuillez entrer des données de contact ou télécharger un fichier CSV",
         "listCreated": "Liste de contacts créée avec succès",
-        "contactAdded": "Contact ajouté avec succès"
+        "contactAdded": "Contact ajouté avec succès",
+        "exportSuccess": "Liste de contacts exportée avec succès"
       }
     },
     "addContact": {
@@ -104,7 +107,9 @@
       "selectTemplate": "Sélectionner un modèle",
       "selectContactList": "Sélectionner une liste de contacts",
       "contactCount": "contacts",
-      "createButton": "Créer la campagne"
+      "createButton": "Créer la campagne",
+      "totalContacts": "Total des contacts sélectionnés",
+      "listsSelected": "liste(s) de contacts sélectionnée(s)"
     },
     "table": {
       "campaign": "Campagne",
@@ -137,6 +142,7 @@
       "pauseSuccess": "Campagne mise en pause",
       "cantDelete": "Impossible de supprimer une campagne en cours d'envoi",
       "configureSmtp": "Veuillez configurer les paramètres SMTP d'abord",
+      "emptyTemplate": "Le modèle sélectionné n'a pas de contenu. Veuillez d'abord modifier le modèle.",
       "smtpAuth": "Veuillez fournir les détails d’authentification SMTP",
       "noContacts": "Aucun contact disponible pour l'envoi",
       "completedWithErrors": "Campagne terminée avec {0} erreurs. {1} e-mails envoyés avec succès.",

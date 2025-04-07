@@ -7,7 +7,7 @@ import { initializeDatabase } from './database/migrate.js';
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));  // Increased payload limit
 
 // Run migrations when server starts
 await initializeDatabase().catch(console.error);
@@ -102,17 +102,35 @@ app.get('/api/settings', async (req, res) => {
         c.subject,
         c.template_id as templateId,
         t.name as templateName,
-        c.contact_list_id as contactListId,
-        cl.name as contactListName,
         c.status,
         c.sent_count as sentCount,
         c.total_count as totalCount,
         c.create_date as createDate
       FROM campaigns c
       LEFT JOIN templates t ON c.template_id = t.id
-      LEFT JOIN contact_lists cl ON c.contact_list_id = cl.id
     `);
-
+    
+    // Fetch contact lists for each campaign
+    for (let campaign of campaigns) {
+      const [campaignContactLists] = await pool.query(`
+        SELECT 
+          cl.id as contactListId,
+          cl.name as contactListName
+        FROM campaign_contact_lists ccl
+        JOIN contact_lists cl ON ccl.contact_list_id = cl.id
+        WHERE ccl.campaign_id = ?
+      `, [campaign.id]);
+      
+      campaign.contactListIds = campaignContactLists.map(cl => cl.contactListId);
+      campaign.contactListNames = campaignContactLists.map(cl => cl.contactListName);
+      
+      // For backward compatibility
+      if (campaignContactLists.length > 0) {
+        campaign.contactListId = campaignContactLists[0].contactListId;
+        campaign.contactListName = campaignContactLists[0].contactListName;
+      }
+    }
+    
     // Fetch error details for each campaign
     for (let campaign of campaigns) {
       const [errors] = await pool.query(`
@@ -168,8 +186,8 @@ app.get('/api/settings', async (req, res) => {
         subject: c.subject,
         templateId: c.templateId,
         templateName: c.templateName,
-        contactListId: c.contactListId,
-        contactListName: c.contactListName,
+        contactListIds: c.contactListIds || [],
+        contactListNames: c.contactListNames || [],
         status: c.status,
         sentCount: c.sentCount,
         totalCount: c.totalCount,
@@ -210,7 +228,7 @@ app.post('/api/settings', async (req, res) => {
 
         // Handle SMTP config update if provided
         if (smtpConfig) {
-          await pool.query(
+          await connection.query(
             `UPDATE smtp_config
             SET host = ?, port = ?, username = ?, password = ?, 
                 fromEmail = ?, fromName = ?, useSSL = ?, useAuth = ?
@@ -282,10 +300,12 @@ app.post('/api/settings', async (req, res) => {
               if (data.contacts) {
                 // Delete contacts that are no longer in the list
                 const newEmailList = data.contacts.map(c => c.email);
-                await pool.query(
-                  'DELETE FROM contacts WHERE contact_list_id = ? AND email NOT IN (?)',
-                  [data.id, newEmailList]
-                );
+                if (newEmailList.length > 0) {
+                  await pool.query(
+                    'DELETE FROM contacts WHERE contact_list_id = ? AND email NOT IN (?)',
+                    [data.id, newEmailList]
+                  );
+                }                                  
     
                 // Insert only new contacts that don't exist
                 if (data.contacts.length > 0) {
@@ -318,21 +338,39 @@ app.post('/api/settings', async (req, res) => {
               const parsedDate = new Date(data.createDate);
               const mysqlDateTime = format(parsedDate, 'yyyy-MM-dd HH:mm:ss');
               
-              await pool.query(
+              // Insert campaign without contact list reference
+              await connection.query(
                 `INSERT INTO campaigns 
-                 (id, name, subject, template_id, contact_list_id, 
-                  status, sent_count, total_count, create_date) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                 (id, name, subject, template_id, status, sent_count, total_count, create_date) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                 [data.id, data.name, data.subject, data.templateId,
-                 data.contactListId, data.status, data.sentCount, data.totalCount, mysqlDateTime]
+                 data.status, data.sentCount, data.totalCount, mysqlDateTime]
               );
+              
+              // Insert each contact list relationship
+              if (Array.isArray(data.contactListIds) && data.contactListIds.length > 0) {
+                const contactListValues = data.contactListIds.map(listId => [data.id, listId]);
+                await connection.query(
+                  'INSERT INTO campaign_contact_lists (campaign_id, contact_list_id) VALUES ?',
+                  [contactListValues]
+                );
+              } 
+              // For backward compatibility
+              else if (data.contactListId) {
+                await connection.query(
+                  'INSERT INTO campaign_contact_lists (campaign_id, contact_list_id) VALUES (?, ?)',
+                  [data.id, data.contactListId]
+                );
+              }
+              
+              // Handle errors if present
               if (data.error) {
                 const errors = JSON.parse(data.error);
                 if (Array.isArray(errors) && errors.length > 0) {
                   const errorValues = errors.map(err => 
                     [err.email, err.error, data.id]
                   );
-                  await pool.query(
+                  await connection.query(
                     'INSERT INTO errors (email, error, campaign_id) VALUES ?',
                     [errorValues]
                   );
@@ -364,18 +402,37 @@ app.post('/api/settings', async (req, res) => {
                   SET ${updateCampaignFields.join(', ')} 
                   WHERE id = ?
                 `;
-                await pool.query(updateCampaignQuery, updateCampaignValues);
+                await connection.query(updateCampaignQuery, updateCampaignValues);
+              }
+              
+              // Update contact lists if provided
+              if (Array.isArray(data.contactListIds)) {
+                // Delete all existing relations
+                await connection.query(
+                  'DELETE FROM campaign_contact_lists WHERE campaign_id = ?',
+                  [data.id]
+                );
+                
+                // Insert new relations
+                if (data.contactListIds.length > 0) {
+                  const contactListValues = data.contactListIds.map(listId => [data.id, listId]);
+                  await connection.query(
+                    'INSERT INTO campaign_contact_lists (campaign_id, contact_list_id) VALUES ?',
+                    [contactListValues]
+                  );
+                }
               }
     
+              // Handle error updates
               if (data.error !== undefined) {
-                await pool.query('DELETE FROM errors WHERE campaign_id = ?', [data.id]);
+                await connection.query('DELETE FROM errors WHERE campaign_id = ?', [data.id]);
                 if (data.error) {
                   const errors = JSON.parse(data.error);
                   if (Array.isArray(errors) && errors.length > 0) {
                     const errorValues = errors.map(err => 
                       [err.email, err.error, data.id]
                     );
-                    await pool.query(
+                    await connection.query(
                       'INSERT INTO errors (email, error, campaign_id) VALUES ?',
                       [errorValues]
                     );
@@ -385,8 +442,8 @@ app.post('/api/settings', async (req, res) => {
               break;
     
             case 'DELETE_CAMPAIGN':
-              // Errors will be deleted automatically due to foreign key constraint
-              await pool.query('DELETE FROM campaigns WHERE id = ?', [data.id]);
+              // The campaign and its relations will be deleted due to foreign key constraints
+              await connection.query('DELETE FROM campaigns WHERE id = ?', [data.id]);
               break;
     
             default:

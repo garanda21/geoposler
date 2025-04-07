@@ -78,7 +78,27 @@ const migrations = [
   `ALTER TABLE smtp_config ADD COLUMN useAuth BOOLEAN DEFAULT 0 NOT NULL`,
 
   //Enable by default the useAuth column
-  `UPDATE smtp_config SET useAuth = 1 WHERE id = 1`
+  `UPDATE smtp_config SET useAuth = 1 WHERE id = 1`,
+
+  // Add new migration to support multiple contact lists per campaign
+  `ALTER TABLE campaigns MODIFY COLUMN contact_list_id varchar(50) NULL`,
+  
+  `CREATE TABLE IF NOT EXISTS campaign_contact_lists (
+    id int NOT NULL AUTO_INCREMENT,
+    campaign_id varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    contact_list_id varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY campaign_contact_list_unique (campaign_id, contact_list_id),
+    KEY campaign_id (campaign_id),
+    KEY contact_list_id (contact_list_id),
+    CONSTRAINT campaign_contact_lists_ibfk_1 FOREIGN KEY (campaign_id) REFERENCES campaigns (id) ON DELETE CASCADE,
+    CONSTRAINT campaign_contact_lists_ibfk_2 FOREIGN KEY (contact_list_id) REFERENCES contact_lists (id) ON DELETE CASCADE
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+  
+  // Migration to move existing campaign contact list references to the junction table
+  `INSERT INTO campaign_contact_lists (campaign_id, contact_list_id)
+   SELECT id, contact_list_id FROM campaigns 
+   WHERE contact_list_id IS NOT NULL AND contact_list_id != ''`
 ];
 
 async function runMigrations() {

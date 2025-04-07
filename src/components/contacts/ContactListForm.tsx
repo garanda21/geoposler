@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { EmailContact } from '../../types';
 import { parseCSV } from '../../utils/csvParser';
-import { Upload } from 'lucide-react';
+import { Upload, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -50,6 +50,38 @@ export const ContactListForm: React.FC<Props> = ({ onSave, onCancel }) => {
       const contacts = parseCSV(csvContent);
       onSave(name, contacts);
       toast.success(t('contacts.list.messages.listCreated'));
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleExportCSV = () => {
+    if (!csvContent.trim()) {
+      toast.error(t('contacts.list.messages.dataRequired'));
+      return;
+    }
+
+    try {
+      // Crear un blob con el contenido CSV
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      
+      // Crear un objeto URL para el blob
+      const url = URL.createObjectURL(blob);
+      
+      // Crear un enlace temporal para la descarga
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${name || 'contacts'}.csv`);
+      document.body.appendChild(link);
+      
+      // Simular clic en el enlace para iniciar la descarga
+      link.click();
+      
+      // Limpiar después de la descarga
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success(t('contacts.list.messages.exportSuccess') || 'Lista de contactos exportada con éxito');
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -114,6 +146,16 @@ export const ContactListForm: React.FC<Props> = ({ onSave, onCancel }) => {
         >
           {t('contacts.list.actions.cancel')}
         </button>
+        {csvContent && (
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            className="px-4 py-2 border flex items-center space-x-1 rounded-md text-indigo-600 hover:bg-indigo-50"
+          >
+            <Download className="w-4 h-4" />
+            <span>{t('contacts.list.actions.exportCSV') || 'Exportar CSV'}</span>
+          </button>
+        )}
         <button
           type="submit"
           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"

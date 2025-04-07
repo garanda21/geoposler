@@ -7,7 +7,8 @@
     "selectOrCreate": "Seleccione una plantilla o cree una nueva",
     "messages": {
       "uploadSuccess": "Plantilla subida exitosamente",
-      "createSuccess": "Nueva plantilla creada"
+      "createSuccess": "Nueva plantilla creada",
+      "failedSave": "Error al guardar la plantilla, por favor revise los registros"
     },
     "editor": {
       "templateName": "Nombre de la Plantilla",
@@ -47,7 +48,8 @@
         "save": "Guardar",
         "cancel": "Cancelar",
         "addContact": "Agregar Contacto",
-        "deleteList": "Eliminar Lista"
+        "deleteList": "Eliminar Lista",
+        "exportCSV": "Exportar CSV"
       },
       "form": {
         "listName": "Nombre de la Lista",
@@ -64,7 +66,8 @@
         "nameRequired": "Por favor ingrese un nombre para la lista",
         "dataRequired": "Por favor ingrese datos de contacto o suba un archivo CSV",
         "listCreated": "Lista de contactos creada exitosamente",
-        "contactAdded": "Contacto agregado exitosamente"
+        "contactAdded": "Contacto agregado exitosamente",
+        "exportSuccess": "Lista de contactos exportada exitosamente"
       }
     },
     "addContact": {
@@ -104,7 +107,9 @@
       "selectTemplate": "Seleccionar una plantilla",
       "selectContactList": "Seleccionar una lista de contactos",
       "contactCount": "contactos",
-      "createButton": "Crear Campaña"
+      "createButton": "Crear Campaña",
+      "totalContacts": "Total de contactos seleccionados",
+      "listsSelected": "lista(s) de contactos seleccionada(s)"
     },
     "table": {
       "campaign": "Campaña",
@@ -143,6 +148,7 @@
       "pauseSuccess": "Campaña pausada",
       "cantDelete": "No se puede eliminar una campaña mientras se está enviando",
       "configureSmtp": "Por favor configure los ajustes SMTP primero",
+      "emptyTemplate": "La plantilla seleccionada no tiene contenido. Por favor edite la plantilla primero.",
       "smtpAuth": "Por favor configure los detalles de autenticación SMTP",
       "noContacts": "No hay contactos disponibles para enviar",
       "completedWithErrors": "Campaña completada con {0} errores. {1} emails enviados exitosamente.",

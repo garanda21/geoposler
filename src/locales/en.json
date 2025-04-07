@@ -7,7 +7,8 @@
     "selectOrCreate": "Select a template or create a new one",
     "messages": {
       "uploadSuccess": "Template uploaded successfully",
-      "createSuccess": "New template created"
+      "createSuccess": "New template created",
+      "failedSave": "Failed to save template, please check the logs"
     },
     "editor": {
       "templateName": "Template Name",
@@ -47,7 +48,8 @@
         "save": "Save",
         "cancel": "Cancel",
         "addContact": "Add Contact",
-        "deleteList": "Delete List"
+        "deleteList": "Delete List",
+        "exportCSV": "Export CSV"
       },
       "form": {
         "listName": "List Name",
@@ -64,7 +66,8 @@
         "nameRequired": "Please enter a list name",
         "dataRequired": "Please enter contact data or upload a CSV file",
         "listCreated": "Contact list created successfully",
-        "contactAdded": "Contact added successfully"
+        "contactAdded": "Contact added successfully",
+        "exportSuccess": "Contact list exported successfully"
       }
     },
     "addContact": {
@@ -104,7 +107,9 @@
       "selectTemplate": "Select a template",
       "selectContactList": "Select a contact list",
       "contactCount": "contacts",
-      "createButton": "Create Campaign"
+      "createButton": "Create Campaign",
+      "totalContacts": "Total selected contacts",
+      "listsSelected": "selected contact list(s)"
     },
     "table": {
       "campaign": "Campaign",
@@ -132,6 +137,7 @@
     "messages": {
       "fillFields": "Please fill in all fields",
       "notFound": "Selected template or contact list not found",
+      "emptyTemplate": "The selected template has no content. Please edit the template first.",
       "createSuccess": "Campaign created successfully",
       "deleteSuccess": "Campaign deleted successfully",
       "pauseSuccess": "Campaign paused",
