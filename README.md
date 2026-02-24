@@ -1,3 +1,17 @@
+> [!WARNING]
+> 📦 Project Archived
+>
+> First of all, thank you to everyone who used this project, opened issues, submitted pull requests, or shared feedback. Your contributions, ideas, and support were genuinely appreciated and helped shape the project over time.
+> 
+> After careful consideration, we’ve decided to archive this repository in favor of more mature and actively maintained tools that better solve the problem space today. In particular, we recommend:
+> 
+> 👉 [Listmonk](https://github.com/knadh/listmonk) is a powerful, modern, and actively maintained solution that provides more features, better performance, and long-term sustainability.
+> 
+> This repository will remain available for historical reference, but no further updates, fixes, or support will be provided.
+> 
+> Thank you again to everyone who was part of this project. 
+
+
 
 # Geoposler
 
